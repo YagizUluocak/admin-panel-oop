@@ -209,16 +209,305 @@ class Ayar extends Db
         return $stmt->execute($params);
     }
 
-
-
 }
 
+class Banka extends Db
+{
+    private $banka_id;
+    private $banka_adi;
+    private $hesap_adsoyad;
+    private $hesap_sube;
+    private $hesap_numarası;
+    private $hesap_ıban;
 
+    public function bankaGetir()
+    {
+        $query = "SELECT * FROM banka";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 
+    public function bankaIDGetir()
+    {
+        $this->banka_id = $_GET['banka_id'];
+        $query = "SELECT * FROM banka WHERE banka_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->banka_id]);
+        return $stmt->fetch();
+    }
 
+    public function bankaEkle()
+    {
+        $this->banka_adi = $_POST['banka_adi'];
+        $this->hesap_adsoyad = $_POST['hesap_adsoyad'];
+        $this->hesap_sube = $_POST['hesap_sube'];
+        $this->hesap_numarası = $_POST['hesap_numarası'];
+        $this->hesap_ıban = $_POST['hesap_ıban'];
 
+        $query = "INSERT INTO banka (banka_adi, hesap_adsoyad, hesap_suba, hesasp_numarası, hesap_ıban) VALUES (:banka_adi, :hesap_adsoyad, :hesap_suba, :hesap_numarası, :hesap_ıban)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':banka_adi' => $this->banka_adi,
+            ':hesap_adsoyad' => $this->hesap_adsoyad,
+            ':hesap_sube' => $this->hesap_sube,
+            ':hesap_numarası' => $this->hesap_numarası,
+            ':hesap_ıban' => $this->hesap_ıban
+        ]);
+    }
 
+    public function bankaGuncelle()
+    {
+        $this->banka_id = $_GET['banka_id'];
+        $this->banka_adi = $_POST['banka_adi'];
+        $this->hesap_adsoyad = $_POST['hesap_adsoyad'];
+        $this->hesap_sube = $_POST['hesap_sube'];
+        $this->hesap_numarası = $_POST['hesap_numarası'];
+        $this->hesap_ıban = $_POST['hesap_ıban'];
 
+        $query = "UPDATE banka SET 
+            banka_adi=:banka_adi,
+            hesap_adsoyad=:hesap_adsoyad,
+            hesap_sube=:hesap_sube,
+            hesap_numarası=:hesap_numarası,
+            hesap_ıban=:hesap_ıban 
+            WHERE banka_id=:banka_id";
+
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':banka_id' => $this->banka_id,
+            ':banka_adi' => $this->banka_adi,
+            ':hesap_adsoyad' => $this->hesap_adsoyad,
+            ':hesap_sube' => $this->hesap_sube,
+            ':hesap_numarası' => $this->hesap_numarası,
+            ':hesap_ıban' => $this->hesap_ıban
+        ]);
+    }
+
+    public function bankaSil()
+    {
+        $this->banka_id = $_GET['banka_id'];
+
+        $query = "DELETE FROM banka WHERE banka_id=banka_id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':banka_id' => $this->banka_id]);
+    }
+}
+
+class Belge extends Db
+{
+    private $belge_id;
+    private $belge_baslik;
+    private $belge_resim = null;
+    private $belge = null;
+    private $belge_durum;
+
+    public function belgeGetir()
+    {
+        $query = "SELECT * FROM belgeler";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function belgeIDGetir()
+    {
+        $this->belge_id = $_GET['belge_id'];
+        $query = "SELECT * FROM belgeler WHERE belge_id=:belge_id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':belge_id' => $this->belge_id]);
+        return $stmt->fetch();
+    }
+    
+    public function belgeGuncelle()
+    {
+        $this->belge_id = $_GET['belge_id'];
+        $this->belge_baslik = $_POST['belge_baslik'];
+        $this->belge_durum = $_POST['belge_durum'];
+
+        //Belge Resmi
+        if(isset($_FILES['belge_resim']) && $_FILES['belge_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->belge_resim = $_FILES['belge_resim']['name'];
+            $hedefKlasor = '../images/belge/';
+            $hedefDosya = $hedefKlasor . $this->belge_resim;
+
+            if(move_uploaded_file($_FILES['belge_resim']['tmp_name'], $hedefDosya))
+            {
+                $this->belge_resim = $this->belge_resim;
+            }
+            else
+            {
+                echo "Belge Resmi Yükleme Başarısız.";
+            }
+        }
+        //Belge Yükleme pdf vs
+        if(isset($_FILES['belge']) && $_FILES['belge']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->belge = $_FILES['belge']['name'];
+            $hedefKlasor = '../images/belge/';
+            $hedefDosya = $hedefKlasor . $this->belge;
+
+            if(move_uploaded_file($_FILES['belge']['tmp_name'], $hedefDosya))
+            {
+                $this->belge = $this->belge;
+            }
+            else
+            {
+                echo "Belge Yükleme Başarısız.";
+            }
+        }
+
+        $query = "UPDATE belgeler SET belge_baslik=:belge_baslik, belge_durum=:belge_durum";
+
+        if($this->belge_resim)
+        {
+            $query .= ", belge_resim=:belge_resim";
+        }
+        if($this->belge)
+        {
+            $query .= ", belge=:belge";
+        }
+
+        $query .= " WHERE belge_id=:belge_id";
+
+        $stmt = $this->connect()->prepare($query);
+
+        $params = [
+            ':belge_id' => $this->belge_id,
+            ':belge_baslik' => $this->belge_baslik,
+            ':belge_durum' => $this->belge_durum
+        ];
+
+        if($this->belge_resim)
+        {
+            $params['belge_resim'] = $this->belge_resim;
+        }
+        if($this->belge)
+        {
+            $params['belge'] = $this->belge;
+        }
+        return $stmt->execute($params);
+    }
+
+    public function belgeEkle()
+    {
+        $this->belge_baslik = $_POST['belge_baslik'];
+        $this->belge_durum = $_POST['belge_durum'];
+
+        //Belge Resim
+        if(isset($_FILES['belge_resim']) && $_FILES['belge_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->belge_resim = $_FILES['belge_resim']['name'];
+            $hedefKlasor = "../images/belge/";
+            $hedefDosya = $hedefKlasor . $this->belge_resim;
+            if(move_uploaded_file($_FILES['belge_resim']['tmp_name'], $hedefDosya))
+            {
+                $this->belge_resim = $this->belge_resim;
+            }
+            else
+            {
+                echo "Belge Resmi yüklenirken Hata Oluştu.";
+            }
+        }
+
+        //Belge
+        if(isset($_FILES['belge']) && $_FILES['belge']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->belge = $_FILES['belge']['name'];
+            $hedefKlasor = "../images/belge/";
+            $hedefDosya = $hedefKlasor . $this->belge_resim;
+            if(move_uploaded_file($_FILES['belge']['tmp_name'], $hedefDosya))
+            {
+                $this->belge = $this->belge;
+            }
+            else
+            {
+                echo "Belge yüklenirken Hata Oluştu.";
+            }
+        }
+
+        $query = "INSERT INTO belgeler(belge_baslik, belge_durum, belge_resim, belge) VALUES (:belge_baslik, :belge_durum, :belge_resim, :belge)";
+
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':belge_baslik' => $this->belge_baslik,
+            ':belge_durum' => $this->belge_durum,
+            ':belge_resim' => $this->belge_resim,
+            ':belge' => $this->belge
+        ]);
+    }
+
+    public function belgeSil()
+    {
+        $this->belge_id = $_GET['belge_id'];
+
+        $query = "DELETE FROM belgeler WHERE belge_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->belge_id]);
+    }
+}
+
+class Bilgi extends Db
+{
+    private $bilgi_id;
+    private $bilgi_baslik;
+    private $bilgi_aciklama;
+
+    public function bilgiGetir()
+    {
+        $query = "SELECT * FROM bilgiler";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    
+    public function bilgiIDGetir()
+    {
+        $this->bilgi_id = $_GET['bilgi_id'];
+        $query = "SELECT * FROM bilgiler WHERE bilgi_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->bilgi_id]);
+        return $stmt->fetch();
+    }
+
+    public function bilgiEkle()
+    {
+        $this->bilgi_baslik = $_POST['bilgi_baslik'];
+        $this->bilgi_aciklama = $_POST['bilgi_aciklama'];
+
+        $query = "INSERT INTO bilgiler (bilgi_baslik, bilgi_aciklama) VALUES (:bilgi_baslik, :bilgi_aciklama)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':bilgi_baslik' => $this->bilgi_baslik,
+            ':bilgi_aciklama' => $this->bilgi_aciklama
+        ]);
+    }
+
+    public function bilgiGuncelle()
+    {
+        $this->bilgi_id = $_GET['bilgi_id'];
+        $this->bilgi_baslik = $_POST['bilgi_baslik'];
+        $this->bilgi_aciklama = $_POST['bilgi_aciklama'];
+
+        $query = "UPDATE bilgiler SET bilgi_baslik=:baslik, bilgi_aciklama=:aciklama WHERE bilgi_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            'id' => $this->bilgi_id,
+            'baslik' => $this->bilgi_baslik,
+            'aciklama' => $this->bilgi_aciklama
+        ]);
+    }
+
+    public function bilgiSil()
+    {
+        $this->bilgi_id = $_GET['bilgi_id'];
+
+        $query = "DELETE FROM bilgiler WHERE bilgi_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->bilgi_id]);
+    }
+}
 
 
 
