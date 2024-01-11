@@ -17,7 +17,7 @@
 				</div>
 				<div class="card-block">
 
-					<form method="POST" action="controller/function.php" enctype="multipart/form-data" class="form-horizontal">
+					<form method="POST" enctype="multipart/form-data" class="form-horizontal">
 						<div class="form-group">
 							<input type="hidden" name="bilgi_id">
 						</div>						

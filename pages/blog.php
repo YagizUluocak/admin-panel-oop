@@ -1,3 +1,16 @@
+<?php 
+require_once ('../classes/db.class.php');
+include "../classes/functions.class.php";
+
+include "../_inc/header.php";
+include "../_inc/topbar.php";
+include "../_inc/sidebar.php";
+
+$Blog = new Blog();
+$blogGetir = $Blog->blogGetir();
+
+
+?>
 <!-- ============================================================== -->
 <!-- 						Content Start	 						-->
 <!-- ============================================================== -->
@@ -36,18 +49,32 @@
 								</th>
 							</tr>
 						</thead>
+						<?php
+							if($blogGetir)
+							{
+								?>
 						<tbody>
-								<tr>
-									<td>#</td>
-									<td><img style="max-height: 40px;max-width: 40px;" src="#"></td>
-									<td></td>
-									<td></td>
-									<td class="text-center">
-										<a href="#" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
-										<a href="#" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
-									</td>
-								</tr>
-							</tbody>
+							<?php
+							foreach($blogGetir as $blog)
+							{
+								?>
+									<tr>
+										<td><?php echo $blog->blog_id?></td>
+										<td><img style="max-height: 40px;max-width: 40px;" src="../images/blog/<?php echo $blog->blog_resim?>"></td>
+										<td><?php echo $blog->blog_baslik?></td>
+										<td><?php echo $blog->blog_tarih?></td>
+										<td class="text-center">
+											<a href="./blog-duzenle.php?blog_id=<?php echo $blog->blog_id?>" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
+											<a href="#" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+										</td>
+									</tr>
+								<?php
+							}
+							?>
+						</tbody>
+						<?php
+						}
+						?>
 						</table>
 					</div>
 				</div>

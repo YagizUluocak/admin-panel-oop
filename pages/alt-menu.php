@@ -40,7 +40,7 @@
 					<hr>
 					<br />
 					<h5 style="color: green;">Var Olan Alt Menüler</h5>
-						<form method="POST" action="controller/function.php" class="form-horizontal">
+						<form method="POST" class="form-horizontal">
 							<div class="form-group">
 								<div class="row">
 

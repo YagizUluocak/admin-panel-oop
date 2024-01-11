@@ -15,7 +15,7 @@
 
 				<div class="card-block">
 					<h5 style="color: green;">Yeni Alt Link Ekle</h5>
-					<form method="POST" action="controller/function.php" class="form-horizontal">
+					<form method="POST" class="form-horizontal">
 						<div class="form-group">
 							<div class="row">
 								<div class="col-md-4">
