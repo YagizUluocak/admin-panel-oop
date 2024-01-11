@@ -461,7 +461,7 @@ class Bilgi extends Db
         $stmt->execute();
         return $stmt->fetchAll();
     }
-    
+
     public function bilgiIDGetir()
     {
         $this->bilgi_id = $_GET['bilgi_id'];
@@ -509,30 +509,17 @@ class Bilgi extends Db
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Blog extends Db
 {
+    private $blog_id;
+    private $blog_baslik;
+    private $blog_detay;
+    private $blog_title;
+    private $blog_description;
+    private $blog_keywords;
+    private $blog_tarih;
+    private $blog_resim;
+
     public function blogGetir()
     {
         $query = "SELECT * FROM bloglar";
@@ -540,5 +527,248 @@ class Blog extends Db
         $stmt->execute();
         return $stmt->fetchAll();
     }
+    
+    public function blogIDGetir()
+    {
+        $this->blog_id = $_GET['blog_id'];
+        $query = "SELECT * FROM bloglar WHERE blog_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->blog_id]);
+        return $stmt->fetch();
+    }
+
+    public function blogEkle()
+    {
+        $this->blog_baslik = $_POST['blog_baslik'];
+        $this->blog_detay = $_POST['blog_detay'];
+        $this->blog_title = $_POST['blog_title'];
+        $this->blog_description = $_POST['blog_desrcipiton'];
+        $this->blog_keywords = $_POST['blog_keywords'];
+        $this->blog_resim = $_FILES['blog_resim']['name'];
+
+        $hedefKlasor = "../images/blog/";
+        $hedefDosya = $hedefKlasor . $this->blog_resim;
+        if(move_uploaded_file(isset($_FILES['blog_resim']['tmp_name']), $hedefDosya))
+        {
+            $this->blog_resim = $this->blog_resim;
+        }
+        else
+        {
+            echo "Resim yükleme Başarısız.";
+        }
+
+        $query = "INSERT INTO bloglar (blog_baslik, blog_detay, blog_title, blog_descripiton, blog_keywords, blog_resim) VALUES (:blog_baslik, :blog_detay, :blog_title, :blog_descripiton, :blog_keywords, :blog_resim)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':blog_baslik' => $this->blog_baslik,
+            ':blog_detay' => $this->blog_detay,
+            ':blog_title' => $this->blog_title,
+            ':blog_description' => $this->blog_description,
+            ':blog_keywords' => $this->blog_keywords,
+            ':blog_resim' => $this->blog_resim
+        ]);
+    }
+
+    public function blogGuncelle()
+    {
+        $this->blog_id = $_GET['blog_id'];
+        $this->blog_baslik = $_POST['blog_baslik'];
+        $this->blog_detay = $_POST['blog_detay'];
+        $this->blog_title = $_POST['blog_title'];
+        $this->blog_description = $_POST['blog_desrcipiton'];
+        $this->blog_keywords = $_POST['blog_keywords'];
+
+        if(isset($_FILES['blog_resim']) && $_FILES['blog_Resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->blog_resim = $_FILES['blog_resim']['name'];
+            $hedefKlasor = "../images/blog/";
+            $hedefDosya = $hedefKlasor . $this->blog_resim;
+
+            if(move_uploaded_file(isset($_FILES['blog_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->blog_resim = $this->blog_resim;
+            }
+            else
+            {
+                echo "Resim Yüklenirken Bir Hata Oluştu.";
+            }
+        }
+
+        $query = "UPDATE bloglar SET blog_baslik=:baslik, blog_detay=:detay, blog_title=:title, blog_description=:descr, blog_keywords=:keywords";
+
+        if($this->blog_resim)
+        {
+            $query .= "blog_resim=:resim";
+        }
+        
+        $query .= " WHERE blog_id=:id";
+        $stmt = $this->connect()->prepare($query);
+
+        $params = [
+            ':id' => $this->blog_id,
+            ':baslik' => $this->blog_baslik,
+            ':detay' => $this->blog_detay,
+            ':title' => $this->blog_title,
+            ':descr' => $this->blog_description,
+            ':keywords' => $this->blog_keywords
+        ];
+        if($this->blog_resim)
+        {
+            $params['resim'] = $this->blog_resim;
+        }
+
+        return $stmt->execute($params);
+    }
+
+    public function blogSil()
+    {
+        $this->blog_id = $_GET['blog_id'];
+
+        $query = "DELETE FROM bloglar WHERE blog_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->blog_id]);
+    }
 }
+
+class FooterMenu extends Db
+{
+    private $footer_menu_id;
+    private $footer_menu_adi;
+    private $footer_menu_link;
+
+    public function footerMenuGetir()
+    {
+        $query = "SELECT * FROM footer-menu";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function footerMenuIDGetir()
+    {
+        $this->footer_menu_id = $_GET['footer_menu_id'];
+
+        $query = "SELECT * FROM footer-menu WHERE footer_menu_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->footer_menu_id]);
+        return $stmt->fetch();
+    }
+
+    public function footerMenuEkle()
+    {
+        $this->footer_menu_adi = $_POST['footer_menu_adi'];
+        $this->footer_menu_link = $_POST['footer_menu_link'];
+
+        $query = "INSERT INTO footer-menu (footer_menu_adi, footer_menu_link) VALUES (:adi, :link)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':adi' => $this->footer_menu_adi,
+            ':link' => $this->footer_menu_link
+        ]);
+    }
+
+    public function footerMenuGuncelle()
+    {
+        $this->footer_menu_id = $_GET['footer_menu_id'];
+        $this->footer_menu_adi = $_POST['footer_menu_adi'];
+        $this->footer_menu_link = $_POST['footer_menu_link'];
+
+        $query = "UPDATE footer-menu SET footer_menu_adi=:adi, footer_menu_link=:link WHERE footer_menu_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->footer_menu_id,
+            ':adi' => $this->footer_menu_adi,
+            ':link' => $this->footer_menu_link
+        ]);
+    }
+
+    public function footerMenuSil()
+    {
+        $this->footer_menu_id = $_GET['footer_menu_id'];
+
+        $query = "DELETE FROM footer-menu WHERE footer_menu_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->footer_menu_id]);
+    }
+}
+
+class Galeri extends Db
+{
+    private $galeri_id;
+    private $galeri_resim;
+
+    public function galeriGetir()
+    {
+        $query = "SELECT * FROM galeri";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    
+    public function galeriIDGetir()
+    {
+        $this->galeri_id = $_GET['galeri_id'];
+        $query = "SELECT * FROM galeri WHERE galeri_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function galeriEkle()
+    {
+        $this->galeri_resim = $_FILES['galeri_resim']['name'];
+        
+        $hedefKlasor = "../images/galeri/";
+        $hedefDosya = $hedefKlasor . $this->galeri_resim;
+
+        if(move_uploaded_file(isset($_FILES['galeri_resim']['tmp_name']), $hedefDosya))
+        {
+            $this->galeri_resim = $this->galeri_resim;
+        }
+        else
+        {
+            echo "resim Yükleme İşlemi Başarısız.";
+        }
+
+        $query = "INSERT INTO galeri galeri_resim=:resim";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':resim' => $this->galeri_resim]);
+    }
+
+    public function galeriGuncelle()
+    {
+        $this->galeri_id = $_GET['galeri_id'];
+        $this->galeri_resim = $_FILES['galeri_resim']['name'];
+        $hedefKlasor = "../images/galeri/";
+        $hedefDosya = $hedefKlasor . $this->galeri_resim;
+
+        if(move_uploaded_file(isset($_FILES['galeri_resim']['tmp_name']), $hedefDosya))
+        {
+            $this->galeri_resim = $this->galeri_resim;
+        }
+        else
+        {
+            echo "Resim Güncelleme İşlemi Başarısız.";
+        }
+
+        $query = "UPDATE galeri SET galeri_resim=:resim WHERE galeri_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->galeri_id,
+            ':resim' => $this->galeri_resim
+        ]);
+    }
+
+    public function galeriSil()
+    {
+        $this->galeri_id = $_GET['galeri_id'];
+
+        $query = "DELETE FROM galeri WHERE galeri_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->galeri_id]);
+    }
+}
+
+
+
 ?>
