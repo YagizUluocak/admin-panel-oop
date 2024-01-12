@@ -769,6 +769,294 @@ class Galeri extends Db
     }
 }
 
+class Hizmet extends Db
+{
+    private $hizmet_id;
+    private $hizmet_baslik;
+    private $hizmet_icerik;
+    private $hizmet_resim;
+    private $hizmet_icon;
+    private $hizmet_title;
+    private $hizmet_description;
+    private $hizmet_keywords;
+    private $hizmet_durum;
 
+    public function hizmetGetir()
+    {
+        $query = "SELECT * FROM hizmetler";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function hizmetIDGetir()
+    {
+        $this->hizmet_id = $_GET['hizmet_id'];
 
+        $query = "SELECT * FROM hizmetler WHERE hizmet_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->hizmet_id]);
+        return $stmt->fetch();
+    }
+    public function hizmetEkle()
+    {
+        $this->hizmet_baslik = $_POST['hizmet_baslik'];
+        $this->hizmet_icerik = $_POST['hizmeet_icerik'];
+        $this->hizmet_icon = $_POST['hizmet_icon'];
+        $this->hizmet_title = $_POST['hizmet_title'];
+        $this->hizmet_description = $_POST['hizmet_description'];
+        $this->hizmet_keywords = $_POST['hizmet_keywords'];
+        $this->hizmet_durum = $_POST['hizmet_durum'];
+
+        $this->hizmet_resim = $_FILES['hizmet_resim']['name'];
+        $hedefKlasor ="../images/hizmet/";
+        $hedefDosya = $hedefKlasor . $this->hizmet_resim;
+
+        if(move_uploaded_file(isset($_FILES['hizmet_resim']['tmp_name']), $hedefDosya))
+        {
+            $this->hizmet_resim = $this->hizmet_resim;
+        }
+        else
+        {
+            echo "Hizmet Resmi Yüklenirken Bir Hata Oluştu.";
+        }
+
+        $query = "INSERT INTO hizmetler (hizmet_baslik, hizmet_icerik, hizmet_icon, hizmet_title, hizmet_description, hizmet_keywords, hizmet_durum, hizmet_resim) VALUES (:hizmet_baslik, :hizmet_icerik, :hizmet_icon, :hizmet_title, :hizmet_description, :hizmet_keywords, :hizmet_durum, :hizmet_resim)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':hizmet_baslik' => $this->hizmet_baslik,
+            ':hizmet_icerik' => $this->hizmet_icerik,
+            ':hizmet_icon' => $this->hizmet_icon,
+            ':hizmet_title' => $this->hizmet_title,
+            ':hizmet_desctiption' => $this->hizmet_description,
+            ':hizmet_keyowrds' => $this->hizmet_keywords,
+            ':hizmet_durum' => $this->hizmet_durum,
+            'hizmet_resim' => $this->hizmet_resim
+        ]);
+    }
+    public function hizmetGuncelle()
+    {
+        $this->hizmet_id = $_GET['hizmet_id'];
+        $this->hizmet_baslik = $_POST['hizmet_baslik'];
+        $this->hizmet_icerik = $_POST['hizmeet_icerik'];
+        $this->hizmet_icon = $_POST['hizmet_icon'];
+        $this->hizmet_title = $_POST['hizmet_title'];
+        $this->hizmet_description = $_POST['hizmet_description'];
+        $this->hizmet_keywords = $_POST['hizmet_keywords'];
+        $this->hizmet_durum = $_POST['hizmet_durum'];
+
+        $this->hizmet_resim = $_FILES['hizmet_resim']['name'];
+        $hedefKlasor ="../images/hizmet/";
+        $hedefDosya = $hedefKlasor . $this->hizmet_resim;
+        if(move_uploaded_file(isset($_FILES['hizmet_resim']['tmp_name']), $hedefDosya))
+        {
+            $this->hizmet_resim = $this->hizmet_resim;
+        }
+        else
+        {
+            echo "Hizmet Resmi Güncellenirken Bir Hata Oluştu.";
+        }
+        $query = "UPDATE hizmetler SET hizmet_baslik=:baslik, hizmet_icerik=:icerik, hizmet_icon=:icon, hizmet_title=:title, hizmet_description=:descr, hizmet_keywords=:keywords, hizmet_durum=:durum";
+        if($this->hizmet_resim)
+        {
+            $query .= ", hizmet_resim=:resim";
+        }
+        $query .= " WHERE hizmet_id=:id";
+        $stmt = $this->connect()->prepare($query);
+
+        $params = [
+            ':id' => $this->hizmet_id,
+            ':baslik' => $this->hizmet_baslik,
+            ':icerik' => $this->hizmet_icerik,
+            ':icon' => $this->hizmet_icon,
+            ':title' => $this->hizmet_title,
+            ':descr' => $this->hizmet_description,
+            ':keywords' => $this->hizmet_keywords,
+            ':durum' => $this->hizmet_durum
+        ];
+        if($this->hizmet_resim)
+        {
+            $params['resim'] = $this->hizmet_resim;
+        }
+        return $stmt->execute($params);
+    }
+    public function hizmetSil()
+    {
+        $this->hizmet_id = $_GET['hizmet_id'];
+
+        $query = "DELETE FROM hizmetler WHERE hizmet_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->hizmet_id]);
+    }
+}
+class Icon extends Db
+{
+    private $icon_id;
+    private $icon_adi;
+    
+    public function iconGetir()
+    {
+        $query = "SELECT * FROM icons";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function iconIDGetir()
+    {
+        $this->icon_id = $_GET['icon_id'];
+        $query = "SELECT * FROM icons WHERE icon_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->icon_id]);
+        return $stmt->fetch();
+    }
+    public function iconEkle()
+    {
+        $this->icon_adi = $_POST['icon_adi'];
+
+        $query = "INSERT INTO icons(icon_adi) VALUES (:icon_adi)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute(['icon_adi' => $this->icon_adi]);
+    }
+    public function iconGuncelle()
+    {
+        $this->icon_id = $_GET['icon_id'];
+        $this->icon_adi = $_POST['icon_adi'];
+
+        $query = "UPDATE icons SET icon_adi=:icon_adi WHERE icon_id=:icon_id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':icon_id' => $this->icon_id,
+            ':icon_adi' => $this->icon_adi
+        ]);
+    }
+    public function iconSil()
+    {
+        $this->icon_id = $_GET['icon_id'];
+
+        $query = "DELETE FROM icons WHERE icon_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->icon_id]);
+    }
+}
+
+class Kategori extends Db
+{
+    private $kategori_id;
+    private $kategori_adi;
+
+    public function kategoriGetir()
+    {
+        $query = "SELECT * FROM kategoriler";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function kategoriIDGetir()
+    {
+        $this->kategori_id = $_GET['kategori_id'];
+
+        $query = "SELECT * FROM kategoriler WHERE kategori_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+    public function kategoriEkle()
+    {
+        $this->kategori_adi = $_POST['kategori_adi'];
+
+        $query = "INSERT INTO kategoriler (kategori_adi) VALUES (:kategori_adi)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':kategori_adi' => $this->kategori_adi]);
+    }
+    public function kategoriGuncelle()
+    {
+        $this->kategori_id = $_GET['kategori_id'];
+        $this->kategori_adi = $_POST['kategori_adi'];
+
+        $query = "UPDATE kategoriler SET kategori_adi=:adi WHERE kategori_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->kategori_id,
+            ':adi' => $this->kategori_adi
+        ]);
+    }
+    public function kategoriSil()
+    {
+        $this->kategori_id = $_GET['kategori_id'];
+
+        $query = "DELETE FROM kategoriler WHERE kategori_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->kategori_id]);
+    }
+}
+
+class KolayErisim extends Db
+{
+    private $kolay_erisim_id;
+    private $kolay_erisim_adi;
+    private $kolay_erisim_link;
+    private $durum;
+    private $icon_id;
+
+    public function erisimGetir()
+    {
+        $query = "SELECT * FROM kolay-erisim INNER JOIN icons ON kolay-erisim.icon_id = icons.icon_id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function erisimIDGetir()
+    {
+        $this->kolay_erisim_id = $_GET['kolay_erisim_id'];
+
+        $query = "SELECT * FROM kolay-erisim 
+            INNER JOIN icons ON 
+            kolay-erisim.icon_id = icons.icon_id 
+            WHERE kolay-erisim.kolay_erisim_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->kolay_erisim_id]);
+        return $stmt->fetch();
+    }
+    public function erisimEkle()
+    {
+        $this->kolay_erisim_adi = $_POST['erisim_adi'];
+        $this->kolay_erisim_link = $_POST['erisim_link'];
+        $this->durum = $_POST['durum'];
+        $this->icon_id = $_POST['icon_id'];
+
+        $query = "INSERT INTO kolay-erisim (kolay_erisim_adi, kolay_erisim_link, durum, icon_id) VALUES (:erisim_adi, :ersim_link, :durum, :icon_id)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':erisim_adi' => $this->kolay_erisim_adi,
+            ':erisim_link' => $this->kolay_erisim_link,
+            ':durum' => $this->durum,
+            ':icon_id' => $this->icon_id
+        ]);
+    }
+    public function erisimGuncelle()
+    {
+        $this->kolay_erisim_id = $_GET['kolay_erisim_id'];
+        $this->kolay_erisim_adi = $_POST['erisim_adi'];
+        $this->kolay_erisim_link = $_POST['erisim_link'];
+        $this->durum = $_POST['durum'];
+        $this->icon_id = $_POST['icon_id'];
+
+        $query = "UPDATE kolay-erisim SET kolay_erisim_adi=:erisim_adi, kolay_erisim_link=:erisim_link, durum=:durum, icon_id=:icon_id WHERE kolay_erisim_id=:erisim_id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':erisim_id' => $this->kolay_erisim_id,
+            ':erisim_adi' => $this->kolay_erisim_adi,
+            ':erisim_link' => $this->kolay_erisim_link,
+            ':durum' => $this->durum,
+            ':icon_id' => $this->icon_id
+        ]);
+    }
+    public function erisimSil()
+    {
+        $this->kolay_erisim_id = $_GET['kolay_erisim_id'];
+        $query = "DELETE FROM kolay-erisim WHERE kolay_erisim_id=:erisim_id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':erisim_id' => $this->kolay_erisim_id]);
+    }
+
+}
 ?>
