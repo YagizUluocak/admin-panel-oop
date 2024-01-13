@@ -1059,4 +1059,332 @@ class KolayErisim extends Db
     }
 
 }
+
+class MailAyar extends Db
+{
+    private $mail_id;
+    private $mail_host;
+    private $mail_port;
+    private $mail_password;
+
+    public function mailAyarIDGetir()
+    {
+        $this->mail_id = $_GET['mail_id'];
+        $query = "SELECT * FROM mail-ayar WHERE mail_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->mail_id]);
+    }
+    public function mailAyarGuncelle()
+    {
+        $this->mail_id = $_GET['mail_id'];
+        $this->mail_host = $_POST['mail_host'];
+        $this->mail_port = $_POST['mail_port'];
+        $this->mail_password = $_POST['mail_password'];
+
+        $query = "UPDATE FROM mail-ayar SET mail_host=:host, mail_port=:port, mail_password=:pass WHERE mail_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->mail_id,
+            ':host' => $this->mail_host,
+            ':port' => $this->mail_port,
+            ':pass' => $this->mail_password
+        ]);
+    }
+}
+
+class Mesaj extends Db
+{
+    private $mesaj_id;
+    private $mesaj_adsoyad;
+    private $mesaj_tel;
+    private $mesaj_mail;
+    private $mesaj_icerik;
+    
+    public function mesajGetir()
+    {
+        $query = "SELECT * FROM mesajlar";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function mesajIdGetir()
+    {
+        $this->mesaj_id = $_GET['mesaj_id'];
+        $query = "SELECT * FROM mesajlar WHERE mesaj_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->mesaj_id]);
+        return $stmt->fetch();
+    }
+}
+
+class Meta extends Db
+{
+    private $meta_id;	
+    private $meta_sayfa_ad;
+    private $meta_title;
+    private $meta_description;
+    private $meta_keywords;
+
+    public function metaGetir()
+    {
+        $query = "SELECT * FROM meta-tags";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function metaIDGetir()
+    {
+        $this->meta_id = $_GET['meta_id'];
+        $query = "SELECT * FROM meta-tags WHERE meta_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->meta_id]);
+        return $stmt->fetch();
+    }
+    public function metaEkle()
+    {
+        $this->meta_sayfa_ad = $_POST['meta_sayfa_ad'];
+        $this->meta_title = $_POST['meta_title'];
+        $this->meta_description = $_POST['meta_description'];
+        $this->meta_keywords = $_POST['meta_keywords'];
+
+        $query = "INSERT INTO meta-tags (meta_sayfa_ad, meta_title, meta_description, meta_keywords) VALUES (:ad, :title, :description, :keywords)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':ad' => $this->meta_sayfa_ad,
+            ':title' => $this->meta_title,
+            ':description' => $this->meta_description,
+            ':keywords' => $this->meta_keywords
+        ]);
+    }
+    public function metaGuncelle()
+    {
+        $this->meta_id = $_GET['meta_id'];
+        $this->meta_sayfa_ad = $_POST['meta_sayfa_ad'];
+        $this->meta_title = $_POST['meta_title'];
+        $this->meta_description = $_POST['meta_description'];
+        $this->meta_keywords = $_POST['meta_keywords'];
+
+        $query = "UPDATE meta-tags SET meta_sayfa_ad=:ad, meta_title=:title, meta_description=:description, meta_keywords=:keywords WHERE meta_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->meta_id,
+            ':ad' => $this->meta_sayfa_ad,
+            ':title' => $this->meta_title,
+            ':description' => $this->meta_description,
+            ':keywords' => $this->meta_keywords
+        ]);
+    }
+    public function metaSil()
+    {
+        $this->meta_id = $_GET['meta_id'];
+        $query = "DELETE FROM meta-tags WHERE meta_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->meta_id]);
+    }
+}
+
+class Proje extends Db
+{
+    private $proje_id;
+    private $proje_adi;
+    private $proje_icerik;
+    private $proje_title;
+    private $proje_description;
+    private $proje_keywords;
+    private $proje_durum;
+    private $proje_resim;
+
+    public function projeGetir()
+    {
+        $query = "SELECT * FROM projeler";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function projeIDGetir()
+    {
+        $this->proje_id = $_GET['proje_id'];
+        $query = "SELECT * FROM projeler WHERE proje_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->proje_id]);
+        return $stmt->fetch();
+    }
+    public function projeEkle()
+    {
+        $this->proje_adi = $_POST['proje_adi'];
+        $this->proje_icerik = $_POST['proje_icerik'];
+        $this->proje_title = $_POST['proje_title'];
+        $this->proje_description = $_POST['proje_description'];
+        $this->proje_keywords = $_POST['proje_keywords'];
+        $this->proje_durum = $_POST['proje_durum'];
+
+        $this->proje_resim = $_FILES['proje_resim']['name'];
+        $hedefKlasor = "../images/proje/";
+        $hedefDosya = $hedefKlasor . $this->proje_resim;
+
+        $query = "INSERT INTO projeler (proje_adi, proje_icerik, proje_title, proje_description, proje_keywords, proje_durum, proje_resim) VALUES (:adi, :icerik, :title, :descr, :keywords, :durum, :resim)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':adi' => $this->proje_adi, 
+            ':icerik' => $this->proje_adi, 
+            ':title' => $this->proje_adi, 
+            ':descr' => $this->proje_adi, 
+            ':keywords' => $this->proje_adi, 
+            ':durum' => $this->proje_adi, 
+            ':resim' => $this->proje_adi
+        ]);
+    }
+    public function projeGuncelle()
+    {
+        $this->proje_id = $_GET['proje_id'];
+        $this->proje_adi = $_POST['proje_adi'];
+        $this->proje_icerik = $_POST['proje_icerik'];
+        $this->proje_title = $_POST['proje_title'];
+        $this->proje_description = $_POST['proje_description'];
+        $this->proje_keywords = $_POST['proje_keywords'];
+        $this->proje_durum = $_POST['proje_durum'];
+
+        $this->proje_resim = $_FILES['proje_resim']['name'];
+        $hedefKlasor = "../images/proje/";
+        $hedefDosya = $hedefKlasor . $this->proje_resim;
+
+        if(move_uploaded_file(isset($_FILES['proje_resim']['tmp_name']), $hedefDosya))
+        {
+            $this->proje_resim = $this->proje_resim;
+        }
+        else
+        {
+            echo "Proje Resmi Güncellenirken Bir Hata Oluştu.";
+        }
+
+        $query = "UPDATE projeler SET proje_adi=:adi, proje_icerik=:icerik, proje_title=:title, proje_description=:descr, proje_keywords=:keywords, proje_durum=:durum";
+    
+        if($this->proje_resim)
+        {
+            $query .="proje_resim=:resim";
+        }
+        $query = " WHERE proje_id=:id";
+
+        $stmt = $this->connect()->prepare($query);
+        $params = [
+            ':id' => $this->proje_id,
+            ':adi' => $this->proje_adi,
+            ':icerik' => $this->proje_icerik,
+            ':title' => $this->proje_title,
+            ':descr' => $this->proje_description,
+            ':keywords' => $this->proje_keywords,
+            ':durum' => $this->proje_keywords
+        ];
+        if($this->proje_resim)
+        {
+            $params['resim'] = $this->proje_resim;
+        }
+        return $stmt->execute($params);
+    }
+    public function projeSil()
+    {
+        $this->proje_id = $_GET['proje_id'];
+        
+        $query = "DELETE FROM projeler WHERE proje_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->proje_id]);
+    }
+
+}
+
+class Referans extends Db
+{
+    private $referans_id;	
+    private $referans_adi;
+    private $referans_resim;
+    private $referans_aciklama;
+
+   public function referansGetir()
+   {
+    $query = "SELECT * FROM referanslar";
+    $stmt = $this->connect()->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll();
+   }
+   public function referansIDGetir()
+   {
+    $this->referans_id = $_GET['referans_id'];
+
+    $query = "SELECT * FROM referanslar WHERE referans_id=:id";
+    $stmt = $this->connect()->prepare($query);
+    $stmt->execute([':id' => $this->referans_id]);
+    return $stmt->fetch();
+   }
+   public function referansEkle()
+   {
+        $this->referans_adi = $_POST['referans_adi'];
+        $this->referans_aciklama = $_POST['referans_aciklama'];
+
+        $this->referans_resim = $_FILES['referans_resim']['name'];
+        $hedefKlasor = "../images/referans/";
+        $hedefDosya = $hedefKlasor.$this->referans_resim;
+
+        $query = "INSERT INTO referanslar (referans_adi, referans_aciklama, referans_resim) VALUES (:adi, :aciklama, :resim)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':adi' => $this->referans_adi,
+            ':aciklama' => $this->referans_aciklama,
+            ':resim' => $this->referans_resim,
+        ]);
+   }
+   public function referansGuncelle()
+   {
+        $this->referans_id = $_GET['referans_id'];
+        $this->referans_adi = $_POST['referans_adi'];
+        $this->referans_aciklama = $_POST['referans_aciklama'];
+
+        $this->referans_resim = $_FILES['referans_resim']['name'];
+        $hedefKlasor = "../images/referans/";
+        $hedefDosya = $hedefKlasor.$this->referans_resim;
+
+        if(isset($_FILES['referans_resim']) && $_FILES['referans_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->referans_resim = $_FILES['referans_resim']['name'];
+            $hedefKlasor = "../images/referans/";
+            $hedefDosya = $hedefKlasor . $this->referans_resim;
+
+            if(move_uploaded_file(isset($_FILES['referans_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->referans_resim = $this->referans_resim;
+            }
+            else
+            {
+                echo "Resim Yüklenirken Bir Hata Oluştu.";
+            }
+        }
+
+        $query = "UPDATE referanslar SET referans_adi=:adi, referans_aciklama=:aciklama";
+
+        if($this->referans_resim)
+        {
+            $query .= ", referans_resim=:resim";
+        }
+        $query .= " WHERE referans_id=:id";
+        $stmt = $this->connect()->prepare($query);
+
+        $params = [
+            ':id' => $this->referans_id,
+            ':adi' => $this->referans_adi,
+            ':aciklama' => $this->referans_aciklama
+        ];
+        if($this->referans_resim)
+        {
+            $params[':resim'] = $this->referans_resim;
+        }
+        return $stmt->execute($params);
+   }
+   public function referansSil()
+   {
+     $this->referans_id = $_GET['referans_id'];
+ 
+     $query = "DELETE FROM referanslar WHERE referans_id=:id";
+     $stmt = $this->connect()->prepare($query);
+     return $stmt->execute([':id' => $this->referans_id]);
+   }
+}
 ?>
