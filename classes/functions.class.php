@@ -1387,4 +1387,632 @@ class Referans extends Db
      return $stmt->execute([':id' => $this->referans_id]);
    }
 }
+
+class Sayac extends Db
+{
+    private $sayac_id;
+    private $sayac_baslik;
+    private $sayac_icon;
+    private $sayac_deger;
+
+    public function sayacGetir()
+    {
+        $query = "SELECT * FROM sayac";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function sayacIDGetir()
+    {
+        $this->sayac_id = $_GET['sayac_id'];
+
+        $query = "SELECT * FROM sayac WHERE sayac_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->sayac_id]);
+        return $stmt->fetch();
+    }
+    public function sayacEkle()
+    {
+        $this->sayac_baslik = $_POST['sayac_baslik'];
+        $this->sayac_icon = $_POST['sayac_icon'];
+        $this->sayac_deger = $_POST['sayac_deger'];
+
+        $query = "INSERT INTO sayac (sayac_baslik, sayac_icon, sayac_deger) VALUES (:baslik, :icon, :deger)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':baslik' => $this->sayac_baslik,
+            ':icon' => $this->sayac_icon,
+            ':deger' => $this->sayac_deger
+        ]);
+    }
+    public function sayacGuncelle()
+    {
+        $this->sayac_id = $_GET['sayac_id'];
+        $this->sayac_baslik = $_POST['sayac_baslik'];
+        $this->sayac_icon = $_POST['sayac_icon'];
+        $this->sayac_deger = $_POST['sayac_deger'];
+
+        $query = "UPDATE sayac SET sayac_baslik=:baslik, sayac_icon=:icon, sayac_deger=:deger WHERE sayac_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->sayac_id,
+            ':baslik' => $this->sayac_baslik,
+            ':icon' => $this->sayac_icon,
+            ':deger' => $this->sayac_deger
+        ]);
+    }
+    public function sayacSil()
+    {
+        $this->sayac_id = $_GET['sayac_id'];
+
+        $query = "DELETE FROM sayac WHERE sayac_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->sayac_id]);
+    }
+}
+
+class Sayfa extends Db
+{
+    private $sayfa_id;
+    private $sayfa_baslik;
+    private $sayfa_icerik;
+    private $sayfa_title;
+    private $sayfa_description;
+    private $sayfa_keywords;
+    private $sayfa_resim;
+    private $sayfa_durum;	
+
+    private $sayfa_durum_kontrol = false;
+
+    public function sayfaGetir($sayfa_durum_kontrol)
+    {
+        $this->sayfa_durum_kontrol = $sayfa_durum_kontrol;
+
+        $query = "SELECT * FROM sayfalar";
+
+        if($sayfa_durum_kontrol == true)
+        {
+            $query .=" WHERE sayfa_durum = 1";
+        }
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute();
+    }
+    public function sayfaIDGetir()
+    {
+        $this->sayfa_id = $_GET['sayfa_id'];
+        $query = "SELECT * FROM sayfalar WHERE sayfa_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->sayfa_id]);
+        return $stmt->fetch();
+    }
+    public function sayfaEkle()
+    {
+        $this->sayfa_baslik = $_POST['sayfa_baslik'];
+        $this->sayfa_icerik = $_POST['sayfa_icerik'];
+        $this->sayfa_title = $_POST['sayfa_title'];
+        $this->sayfa_description = $_POST['sayfa_description'];
+        $this->sayfa_keywords = $_POST['sayfa_keywords'];
+
+        $this->sayfa_resim = $_FILES['sayfa_resim']['name'];
+        $hedefKlasor = "../images/sayfa/";
+        $hedefDosya = $hedefKlasor.$this->sayfa_resim;
+
+        if(isset($_FILES['sayfa_resim']) && $_FILES['sayfa_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->sayfa_resim = $_FILES['sayfa_resim']['name'];
+            $hedefKlasor = "../images/sayfa/";
+            $hedefDosya = $hedefKlasor. $this->sayfa_resim;
+            if(move_uploaded_file(isset($_FILES['sayfa_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->sayfa_resim = $this->sayfa_resim;
+            }
+        }
+        $this->sayfa_durum = $_POST['sayfa_durum'];
+        $query = "INSERT INTO sayfalar 
+        (sayfa_baslik, sayfa_icerik, sayfa_title, sayfa_description, sayfa_keywords, sayfa_resim, sayfa_durum) 
+        VALUES 
+        (:baslik, :icerik, :title, :description, :keywords, :resim, :durum)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':baslik' => $this->sayfa_baslik,
+            ':icerik' => $this->sayfa_icerik,
+            ':title' => $this->sayfa_title,
+            ':description' => $this->sayfa_description,
+            ':keywords' => $this->sayfa_keywords,
+            ':resim' => $this->sayfa_resim,
+            ':durum' => $this->sayfa_durum
+        ]);
+    }
+    public function sayfaGuncelle()
+    {
+        $this->sayfa_id = $_GET['sayfa_id'];
+        $this->sayfa_baslik = $_POST['sayfa_baslik'];
+        $this->sayfa_icerik = $_POST['sayfa_icerik'];
+        $this->sayfa_title = $_POST['sayfa_title'];
+        $this->sayfa_description = $_POST['sayfa_description'];
+        $this->sayfa_keywords = $_POST['sayfa_keywords'];
+        $this->sayfa_durum = $_POST['sayfa_durum'];
+
+        $this->sayfa_resim = $_FILES['sayfa_resim']['name'];
+        $hedefKlasor = "../images/sayfa/";
+        $hedefDosya = $hedefKlasor.$this->sayfa_resim;
+        if(isset($_FILES['sayfa_resim']) && $_FILES['sayfa_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->sayfa_resim = $_FILES['sayfa_resim']['name'];
+            $hedefKlasor = "../images/sayfa/";
+            $hedefDosya = $hedefKlasor. $this->sayfa_resim;
+            if(move_uploaded_file(isset($_FILES['sayfa_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->sayfa_resim = $this->sayfa_resim;
+            }
+        }
+
+        $query = "UPDATE sayfalar SET 
+        sayfa_baslik=:baslik, 
+        sayfa_icerik=:icerik, 
+        sayfa_title=:title, 
+        sayfa_description=:description, 
+        sayfa_keywords=:keywords, 
+        sayfa_durum=:durum";
+
+        if($this->sayfa_resim)
+        {
+            $query.=", sayfa_resim=:resim";
+        }
+        $query.=" WHERE sayfa_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $params = [
+            ':id' => $this->sayfa_id,
+            ':baslik' => $this->sayfa_baslik,
+            ':icerik' => $this->sayfa_icerik,
+            ':title' => $this->sayfa_title,
+            ':description' => $this->sayfa_description,
+            ':keywords' => $this->sayfa_keywords,
+            ':durum' => $this->sayfa_durum,
+        ];
+        if($this->sayfa_resim)
+        {
+            $params[':resim'] = $this->sayfa_resim;
+        }
+        return $stmt->execute($params);
+    }
+    public function sayfaSil()
+    {
+        $this->sayfa_id = $_GET['sayfa_id'];
+
+        $query = "DELETE FROM sayfalar WHERE sayfa_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->sayfa_id]);
+    }
+}
+
+class Slider extends Db
+{
+    private $slider_id;
+    private $slider_baslik;
+    private $slider_aciklama;
+    private $slider_durum;
+    private $slider_resim;
+
+    private $slider_durum_kontrol = false;
+
+    public function sliderGetir($slider_durum_kontrol)
+    {
+        $this->slider_durum_kontrol = $slider_durum_kontrol;
+
+        $query = "SELECT * FROM slider";
+        if($this->slider_durum_kontrol == true)
+        {
+            $query.=" WHERE slider_durum = 1";
+        }
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function sliderIDGetir()
+    {
+        $this->slider_id = $_GET['slider_id'];
+        $query = "SELECT * FROM slider WHERE slider_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->slider_id]);
+        return $stmt->fetch();
+    }
+    public function sliderEkle()
+    {
+        $this->slider_baslik = $_POST['slider_baslik'];
+        $this->slider_aciklama = $_POST['slider_aciklama'];
+        $this->slider_durum = $_POST['slider_durum'];
+
+        $this->slider_resim = $_FILES['slider_resim']['name'];
+        $hedefKlasor = "../images/slider/";
+        $hedefDosya = $hedefKlasor.$this->slider_resim;
+        if(isset($_FILES['slider_resim']) && $_FILES['slider_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->slider_resim = $_FILES['slider_resim']['name'];
+            $hedefKlasor = "../images/slider/";
+            $hedefDosya = $hedefKlasor. $this->slider_resim;
+            if(move_uploaded_file(isset($_FILES['slider_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->slider_resim = $this->slider_resim;
+            }
+        }
+        $query = "INSERT INTO slider 
+        (slider_baslik, slider_aciklama, slider_durum, slider_resim) 
+        VALUES 
+        (:baslik, :aciklama, :durum, :resim)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':baslik' => $this->slider_baslik,
+            ':aciklama' => $this->slider_aciklama,
+            ':durum' => $this->slider_durum,
+            ':resim' => $this->slider_resim
+        ]);
+    }
+    public function sliderGuncelle()
+    {
+        $this->slider_id = $_GET['slider_id'];
+        $this->slider_baslik = $_POST['slider_baslik'];
+        $this->slider_aciklama = $_POST['slider_aciklama'];
+        $this->slider_durum = $_POST['slider_durum'];
+
+        $this->slider_resim = $_FILES['slider_resim']['name'];
+        $hedefKlasor = "../images/slider/";
+        $hedefDosya = $hedefKlasor.$this->slider_resim;
+        if(isset($_FILES['slider_resim']) && $_FILES['slider_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $this->slider_resim = $_FILES['slider_resim']['name'];
+            $hedefKlasor = "../images/slider/";
+            $hedefDosya = $hedefKlasor. $this->slider_resim;
+            if(move_uploaded_file(isset($_FILES['slider_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->slider_resim = $this->slider_resim;
+            }
+        }
+        $query = "UPDATE slider SET 
+        slider_baslik=:baslik, 
+        slider_aciklama=:aciklama, 
+        slider_durum=:durum";
+        if($this->slider_resim)
+        {
+            $query.=", slider_resim=:resim";
+        }
+        $query.=" WHERE slider_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $params = [
+            ':id' => $this->slider_id,
+            ':baslik' => $this->slider_baslik,
+            ':aciklama' => $this->slider_aciklama,
+            ':durum' => $this->slider_durum
+        ];
+        if($this->slider_resim)
+        {
+            $params[':resim'] = $this->slider_resim;
+        }
+        return $stmt->execute($params);
+
+    }
+    public function sliderSil()
+    {
+        $this->slider_id = $_GET['slider_id'];
+        $query = "DELETE FROM slider WHERE slider_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->slider_id]);
+    }
+}
+
+class SosyalMedya extends Db
+{
+    private $sosyal_id;
+    private $sosyal_link;
+    private $sosyal_icon;
+
+    public function sosyalMedyaGetir()
+    {
+        $query = "SELECT * FROM sosyal-medya";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function sosyalMedyaIDGetir()
+    {
+        $this->sosyal_id = $_GET['sosyal_id'];
+        $query = "SELECT * FROM sosyal-medya WHERE sosyal_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->sosyal_id]);
+        return $stmt->fetch();
+    }
+    public function sosyalMedyaEkle()
+    {
+        $this->sosyal_link = $_POST['sosyal_link'];
+        $this->sosyal_icon = $_POST['sosyal_icon'];
+        $query = "INSERT INTO sosyal-medya 
+        (sosyal_link, sosyal_icon) 
+        VALUES 
+        (:link, :icon)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':link' => $this->sosyal_link,
+            ':icon' => $this->sosyal_icon
+        ]);
+    }
+    public function sosyalMedyaGuncelle()
+    {
+        $this->sosyal_id = $_GET['sosyal_id'];
+        $this->sosyal_link = $_POST['sosyal_link'];
+        $this->sosyal_icon = $_POST['sosyal_icon'];
+
+        $query = "UPDATE sosyal-medya SET 
+        sosyal_link=:link, 
+        sosyal_icon=:icon WHERE sosyal_id =:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->sosyal_id,
+            ':link' => $this->sosyal_link,
+            ':icon' => $this->sosyal_icon
+        ]);
+    }
+    public function sosyalMedyaSil()
+    {
+        $this->sosyal_id = $_GET['sosyal_id'];
+        $query = "DELETE FROM sosyal-medya WHERE sosyal_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->sosyal_id]);   
+    }
+}
+
+class SSS extends Db
+{
+    private $sss_id;
+    private $sss_soru;
+    private $sss_cevap;
+    private $sss_durum;
+
+    private $sss_durum_kontrol = false;
+
+    public function sssGetir($sss_durum_kontrol)
+    {
+        $this->sss_durum_kontrol = $sss_durum_kontrol;
+
+        $query = "SELECT * FROM sss";
+        if($this->sss_durum_kontrol == true)
+        {
+            $query.=" WHERE sss_durum = 1";
+        }
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function sssIDGetir()
+    {
+        $this->sss_id = $_GET['sss_id'];
+        $query = "SELECT * FROM sss WHERE sss_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->sss_id]);
+        return $stmt->fetch();
+    }
+    public function sssEkle()
+    {
+        $this->sss_soru = $_POST['sss_soru'];
+        $this->sss_cevap = $_POST['sss_cevap'];
+        $this->sss_durum = $_POST['sss_durum'];
+
+        $query = "INSERT INTO sss 
+        (sss_soru, sss_cevap, sss_durum) 
+        VALUES 
+        (:soru, :cevap, :durum)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':soru' => $this->sss_soru,
+            ':cevap' => $this->sss_cevap,
+            ':durum' => $this->sss_durum
+        ]);
+    }
+    
+    public function sssGuncelle()
+    {
+        $this->sss_id = $_GET['sss_id'];
+        $this->sss_soru = $_POST['sss_soru'];
+        $this->sss_cevap = $_POST['sss_cevap'];
+        $this->sss_durum = $_POST['sss_durum'];
+
+        $query = "UPDATE sss SET 
+        sss_soru=:soru, 
+        sss_cevap=:cevap, 
+        sss_durum=:durum WHERE sss_id =:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':id' => $this->sss_id,
+            ':soru' => $this->sss_soru,
+            ':cevap' => $this->sss_cevap,
+            ':durum' => $this->sss_durum
+        ]);
+    }
+    public function sssSil()
+    {
+        $this->sss_id = $_GET['sss_id'];
+        $query = "DELETE FROM sss WHERE sss_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->sss_id]);
+    }
+
+}
+
+class Urun extends Db
+{
+    private $urun_id;	
+    private $urun_adi;
+    private $urun_aciklama;
+    private $urun_fiyat;
+    private $urun_durum;
+    private $urun_title;
+    private $urun_description;
+    private $urun_keywords;
+    private $urun_resim;
+
+    private $urun_durum_kontrol;
+    
+    public function urunGetir($urun_durum_kontrol)
+    {
+        $this->urun_durum_kontrol = $urun_durum_kontrol;
+        $query = "SELECT * FROM urunler";
+        if($this->urun_durum_kontrol == true)
+        {
+            $query.=" WHERE urun_durum = 1";
+        }
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function urunIDGetir()
+    {
+        $this->urun_id = $_GET['urun_id'];
+        $query = "SELECT * FROM urunler WHERE urun_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->urun_id]);
+        return $stmt->fetch();
+    }
+
+    public function urunEkle()
+    {
+        $this->urun_adi = $_POST['urun_adi'];
+        $this->urun_aciklama = $_POST['urun_aciklama'];
+        $this->urun_fiyat = $_POST['urun_fiyat'];
+        $this->urun_durum = $_POST['urun_durum'];
+        $this->urun_title = $_POST['urun_title'];
+        $this->urun_description = $_POST['urun_description'];
+        $this->urun_keywords = $_POST['urun_keywords'];
+
+        $this->urun_resim = $_FILES['urun_resim']['name'];
+        $hedefKlasor = "../images/urunler/";
+        $hedefDosya = $hedefKlasor . $this->urun_resim;
+
+        $query = "INSERT INTO urunler (urun_adi, urun_aciklama, urun_fiyat, urun_durum, urun_title, urun_desrciption, urun_keywords, urun_resim) VALUES (:adi, :aciklama, :fiyat, :durum, :title, :desrciption, :keywords, :urun_resim)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':adi' => $this->urun_adi,
+            ':aciklama' => $this->urun_aciklama,
+            ':fiyat' => $this->urun_fiyat,
+            ':durum' => $this->urun_durum,
+            ':title' => $this->urun_title,
+            ':desrciption' => $this->urun_description,
+            ':keywords' => $this->urun_keywords,
+            ':urun_resim' => $this->urun_resim
+        ]);
+    }
+    public function urunGuncelle()
+    {
+        $this->urun_id = $_GET['urun_id'];
+        $this->urun_adi = $_POST['urun_adi'];
+        $this->urun_aciklama = $_POST['urun_aciklama'];
+        $this->urun_fiyat = $_POST['urun_fiyat'];
+        $this->urun_durum = $_POST['urun_durum'];
+        $this->urun_title = $_POST['urun_title'];
+        $this->urun_description = $_POST['urun_description'];
+        $this->urun_keywords = $_POST['urun_keywords'];
+        $this->urun_resim = $_FILES['urun_resim']['name'];
+        $hedefKlasor = "../images/urunler/";
+        $hedefDosya = $hedefKlasor. $this->urun_resim;
+        $query = "UPDATE urunler SET 
+        urun_adi=:adi, 
+        urun_aciklama=:aciklama, 
+        urun_fiyat=:fiyat, 
+        urun_durum=:durum,
+        urun_title=:title, 
+        urun_desrciption=:desrciption, 
+        urun_keywords=:keywords";
+
+        if(move_uploaded_file(isset($_FILES['urun_resim']['tmp_name']), $hedefDosya))
+        {
+            $this->urun_resim = $this->urun_resim;
+        }
+        else
+        {
+            echo "Ürün Resmi Güncellenirken Bir Hata Oluştu.";
+        }
+
+        if($this->urun_resim)
+        {
+            $query .= "urun_resim=:resim";
+        }
+        $query .= " WHERE urun_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $params = [
+            ':id' => $this->urun_id,
+            ':adi' => $this->urun_adi,
+            ':aciklama' => $this->urun_aciklama,
+            ':fiyat' => $this->urun_fiyat,
+            ':durum' => $this->urun_durum,
+            ':title' => $this->urun_title,
+            ':desrciption' => $this->urun_description,
+            ':keywords' => $this->urun_keywords
+        ];
+        if($this->urun_resim)
+        {
+            $params['resim'] = $this->urun_resim;
+        }
+        return $stmt->execute($params);
+    }
+    public function urunSil()
+    {
+        $this->urun_id = $_GET['urun_id'];
+        $query = "DELETE FROM urunler WHERE urun_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->urun_id]);
+    }
+
+        
+
+}
+
+class Video extends Db
+{
+    private $video_id;
+    private $video_url;
+    
+    public function videoGetir()
+    {
+        $query = "SELECT * FROM video-galeri";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();   
+    }
+    public function videoIDGetir()
+    {
+        $this->video_id = $_GET['video_id'];
+        $query = "SELECT * FROM video-galeri WHERE video_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->video_id]);
+        return $stmt->fetch();
+    }
+    public function videoEkle()
+    {
+        $this->video_url = $_POST['video_url'];
+        $query = "INSERT INTO video-galeri (video_url) VALUES (:url)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':url' => $this->video_url
+        ]);
+    }
+    public function videoGuncelle()
+    {
+        $this->video_id = $_GET['video_id'];
+        $this->video_url = $_POST['video_url'];
+        $query = "UPDATE video-galeri SET video_url=:url WHERE video_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':url' => $this->video_url,
+            ':id' => $this->video_id
+        ]);
+    }
+    public function videoSil()
+    {
+        $this->video_id = $_GET['video_id'];
+        $query = "DELETE FROM video-galeri WHERE video_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->video_id]);
+    }
+
+}
+
+
 ?>
