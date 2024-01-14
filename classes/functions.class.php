@@ -2014,5 +2014,69 @@ class Video extends Db
 
 }
 
+class Yonetici extends Db
+{
+    private $yonetici_id;
+    private $yonetici_adsoyad;
+    private $yonetici_username;
+    private $yonetici_password;
+    private $yonetici_mail;
+
+    public function yoneticiGetir()
+    {
+        $query = "SELECT * FROM yoneticiler";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function yoneticiIDGetir()
+    {
+        $this->yonetici_id = $_GET['yonetici_id'];
+        $query = "SELECT * FROM yoneticiler WHERE yonetici_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute([':id' => $this->yonetici_id]);
+        return $stmt->fetch();
+    }
+    public function yoneticiEkle()
+    {
+        $this->yonetici_adsoyad = $_POST['yonetici_adsoyad'];
+        $this->yonetici_username = $_POST['yonetici_username'];
+        $this->yonetici_password = $_POST['yonetici_password'];
+        $this->yonetici_mail = $_POST['yonetici_mail'];
+        $query = "INSERT INTO yoneticiler (yonetici_adsoyad, yonetici_username, yonetici_password, yonetici_mail) VALUES (:adsoyad, :username, :password, :mail)";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':adsoyad' => $this->yonetici_adsoyad,
+            ':username' => $this->yonetici_username,
+            ':password' => $this->yonetici_password,
+            ':mail' => $this->yonetici_mail
+        ]);
+    }
+    public function yoneticiGuncelle()
+    {
+        $this->yonetici_id = $_GET['yonetici_id'];
+        $this->yonetici_adsoyad = $_POST['yonetici_adsoyad'];
+        $this->yonetici_username = $_POST['yonetici_username'];
+        $this->yonetici_password = $_POST['yonetici_password'];
+        $this->yonetici_mail = $_POST['yonetici_mail'];
+        $query = "UPDATE yoneticiler SET yonetici_adsoyad=:adsoyad, yonetici_username=:username, yonetici_password=:password, yonetici_mail=:mail WHERE yonetici_id=:id";
+
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([
+            ':adsoyad' => $this->yonetici_adsoyad,
+            ':username' => $this->yonetici_username,
+            ':password' => $this->yonetici_password,
+            ':mail' => $this->yonetici_mail,
+            ':id' => $this->yonetici_id
+        ]);
+    }
+    public function yoneticiSil()
+    {
+        $this->yonetici_id = $_GET['yonetici_id'];
+        $query = "DELETE FROM yoneticiler WHERE yonetici_id=:id";
+        $stmt = $this->connect()->prepare($query);
+        return $stmt->execute([':id' => $this->yonetici_id]);
+    }
+}
 
 ?>
