@@ -1,6 +1,11 @@
 <?php 
 
+
+
+
+
 ?>
+
 <div class="main-sidebar-nav default-navigation">
 	<div class="nano">
 		<div class="nano-content sidebar-nav">
@@ -46,7 +51,7 @@
 								<li class="nav-item"><a class="nav-link" href="yorumlar.php">Yorum Yönetimi</a></li>
 							</ul>
 						</li>
-						<li class="nav-item <?php if (strstr($link, "belge")) { echo "active";} ?><?php if (strstr($link, "slayt")) { echo "active";} ?><?php if (strstr($link, "video")) { echo "active";} ?><?php if (strstr($link, "resim")) { echo "active";} ?>">
+						<li class="nav-item">
 							<a class="nav-link" href="" aria-expanded="true"><i class="icon-film"></i> <span class="toggle-none">Medya Yönetimi<span style="float: right;" class="fa fa-angle-down"></span></span></a>
 							<ul class="nav-second-level nav flex-column sub-menu" aria-expanded="true">
 								<li class="nav-item"><a class="nav-link" href="./pages/resim-galerisi.php">Resim Galerisi</a></li>

@@ -25,7 +25,7 @@
 					</li>
 					<li class="dropdown avtar-dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<img alt="" class="rounded-circle" src="<?php echo $userprint['kullanici_resim']; ?>" width="30">
+							<img alt="" class="rounded-circle" src="#" width="30">
 						</a>
 						<ul class="dropdown-menu top-dropdown">
 							<li>

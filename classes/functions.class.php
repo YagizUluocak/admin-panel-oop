@@ -38,11 +38,12 @@ class Ayar extends Db
         $this->ayar_siteurl = $_POST['ayar_siteurl'];
         $this->ayar_firma_adi = $_POST['ayar_firma_adi'];
         $this->ayar_harita = $_POST['ayar_harita'];
-        
+
         //Ayar_logo Resim
+        $this->ayar_logo = $_FILES['ayar_logo']['name'];
         if(isset($_FILES['ayar_logo']) && $_FILES['ayar_logo']['error'] === UPLOAD_ERR_OK)
         {
-            $this->ayar_logo = $_FILES['ayar_logo']['name'];
+            
             $hedefKlasor = '../images/ayar/';
             $hedefDosya = $hedefKlasor . $this->ayar_logo;
             if(move_uploaded_file($_FILES['ayar_logo']['tmp_name'], $hedefDosya))
@@ -56,9 +57,10 @@ class Ayar extends Db
         }
 
         // Ayar_logo_negative Resim
+        $this->ayar_logo_negative = $_FILES['ayar_logo_negative']['name'];
+
         if(isset($_FILES['ayar_logo_negative']) && $_FILES['ayar_logo_negative']['error'] === UPLOAD_ERR_OK)
         {
-            $this->ayar_logo_negative = $_FILES['ayar_logo_negative']['name'];
             $hedefKlasor = '../images/ayar/';
             $hedefDosya = $hedefKlasor . $this->ayar_logo_negative;
             if(move_uploaded_file($_FILES['ayar_logo_negative']['tmp_name'], $hedefDosya))
@@ -72,9 +74,10 @@ class Ayar extends Db
         }
 
         //Ayar_favicon Resim
+        $this->ayar_favicon = $_FILES['ayar_favicon']['name'];
+
         if(isset($_FILES['ayar_favicon']) && $_FILES['ayar_favicon']['error'] === UPLOAD_ERR_OK)
         {
-            $this->ayar_favicon = $_FILES['ayar_favicon']['name'];
             $hedefKlasor = '../images/ayar/';
             $hedefDosya = $hedefKlasor . $this->ayar_favicon;
 
@@ -171,9 +174,10 @@ class Ayar extends Db
         $this->ayar_renk = $_POST['ayar_renk'];
         $this->ayar_loader = $_POST['ayar_loader'];
 
+        $this->ayar_resim_paralax = $_FILES['ayar_resim_paralax']['name'];
+        
         if(isset($_FILES['ayar_resim_paralax']) && $_FILES['ayar_resim_paralax']['error'] === UPLOAD_ERR_OK)
         {
-            $this->ayar_resim_paralax = $_FILES['ayar_resim_paralax']['name'];
             $hedefKlasor = '../images/ayar/';
             $hedefDosya = $hedefKlasor . $this->ayar_resim_paralax;
 
