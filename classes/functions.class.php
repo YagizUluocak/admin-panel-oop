@@ -175,7 +175,7 @@ class Ayar extends Db
         $this->ayar_loader = $_POST['ayar_loader'];
 
         $this->ayar_resim_paralax = $_FILES['ayar_resim_paralax']['name'];
-        
+
         if(isset($_FILES['ayar_resim_paralax']) && $_FILES['ayar_resim_paralax']['error'] === UPLOAD_ERR_OK)
         {
             $hedefKlasor = '../images/ayar/';
@@ -306,9 +306,15 @@ class Belge extends Db
     private $belge = null;
     private $belge_durum;
 
-    public function belgeGetir()
+    private $belge_durum_kontrol = false;
+
+    public function belgeGetir($belge_durum_kontrol)
     {
         $query = "SELECT * FROM belgeler";
+        if($belge_durum_kontrol)
+        {   
+            $query.= " WHERE belge_durum=:1";
+        }
         $stmt = $this->connect()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -400,9 +406,9 @@ class Belge extends Db
         $this->belge_durum = $_POST['belge_durum'];
 
         //Belge Resim
+        $this->belge_resim = $_FILES['belge_resim']['name'];
         if(isset($_FILES['belge_resim']) && $_FILES['belge_resim']['error'] === UPLOAD_ERR_OK)
         {
-            $this->belge_resim = $_FILES['belge_resim']['name'];
             $hedefKlasor = "../images/belge/";
             $hedefDosya = $hedefKlasor . $this->belge_resim;
             if(move_uploaded_file($_FILES['belge_resim']['tmp_name'], $hedefDosya))
@@ -416,11 +422,11 @@ class Belge extends Db
         }
 
         //Belge
+        $this->belge = $_FILES['belge']['name'];
         if(isset($_FILES['belge']) && $_FILES['belge']['error'] === UPLOAD_ERR_OK)
         {
-            $this->belge = $_FILES['belge']['name'];
             $hedefKlasor = "../images/belge/";
-            $hedefDosya = $hedefKlasor . $this->belge_resim;
+            $hedefDosya = $hedefKlasor . $this->belge;
             if(move_uploaded_file($_FILES['belge']['tmp_name'], $hedefDosya))
             {
                 $this->belge = $this->belge;

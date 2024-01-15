@@ -54,16 +54,16 @@
 						<li class="nav-item">
 							<a class="nav-link" href="" aria-expanded="true"><i class="icon-film"></i> <span class="toggle-none">Medya Yönetimi<span style="float: right;" class="fa fa-angle-down"></span></span></a>
 							<ul class="nav-second-level nav flex-column sub-menu" aria-expanded="true">
-								<li class="nav-item"><a class="nav-link" href="./pages/resim-galerisi.php">Resim Galerisi</a></li>
-								<li class="nav-item"><a class="nav-link" href="./pages/video-galerisi.php">Video Galerisi</a></li>
-								<li class="nav-item"><a class="nav-link" href="./pages/belge-galerisi.php">Belge/Ödül Galerisi</a></li>
+								<li class="nav-item"><a class="nav-link" href="resim-galerisi.php">Resim Galerisi</a></li>
+								<li class="nav-item"><a class="nav-link" href="video-galerisi.php">Video Galerisi</a></li>
+								<li class="nav-item"><a class="nav-link" href="belge-galerisi.php">Belge/Ödül Galerisi</a></li>
 								<li class="nav-item"><a class="nav-link" href="./pages/slayt.php">Slayt Yönetimi</a></li>
 							</ul>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="" aria-expanded="true"><i class="icon-list"></i> <span class="toggle-none">Menü & Dil Yönetimi<span style="float: right;" class="fa fa-angle-down"></span></span></a>
 							<ul class="nav-second-level nav flex-column sub-menu" aria-expanded="true">
-								<li class="nav-item"><a class="nav-link" href="./pages/menu.php">Üst Menü Yönetimi</a></li>
+								<li class="nav-item"><a class="nav-link" href="menu.php">Üst Menü Yönetimi</a></li>
 								<li class="nav-item"><a class="nav-link" href="./pages/alt-menu.php">Alt Menü</a></li>
 								<li class="nav-item"><a class="nav-link" href="./pages/diller.php">Dil Yönetimi</a></li>
 							</ul>
