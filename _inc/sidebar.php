@@ -68,6 +68,7 @@
 								<li class="nav-item"><a class="nav-link" href="./pages/diller.php">Dil Yönetimi</a></li>
 							</ul>
 						</li>
+						<li class="nav-item"><a class="nav-link" href="bilgiler.php"><i class="fa fa-question"></i> <span class="toggle-none">Site İçi Bilgiler</a></li>
 						<li class="nav-item"><a class="nav-link" href="./pages/modul.php"><i class="icon-puzzle"></i> <span class="toggle-none">Modül Yönetimi</a></li>
 							<li class="nav-item "><a class="nav-link" href="./pages/kolay-iletisim.php"><i class="fa fa-phone"></i> <span class="toggle-none">Kolay Erişim</a></li>
 								<li class="nav-item "><a class="nav-link" href="google-yandex-ayarlari.php"><i class="icon-magnifier"></i> <span class="toggle-none">Google&Yandex Yönetimi</a></li>
