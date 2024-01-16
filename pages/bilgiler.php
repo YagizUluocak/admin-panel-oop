@@ -110,3 +110,4 @@ if(isset($_GET['bilgi_id']) && isset($_GET['islem']) && $_GET['islem'] == 'Gunce
 			</div>
 			<!-- İLETİŞİM MESAJLARI -->
 		</div>
+		<?php include "../_inc/footer.php"; ?>

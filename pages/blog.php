@@ -41,18 +41,15 @@ $blogGetir = $Blog->blogGetir();
 								<th class="text-left">
 									<strong>Blog Başlık</strong>
 								</th>
-								<th class="text-left">
-									<strong>Blog İçerik</strong>
-								</th>
 								<th class="text-center">
 									<strong>İşlemler</strong>
 								</th>
 							</tr>
 						</thead>
 						<?php
-							if($blogGetir)
-							{
-								?>
+						if($blogGetir)
+						{
+						?>
 						<tbody>
 							<?php
 							foreach($blogGetir as $blog)
@@ -62,7 +59,6 @@ $blogGetir = $Blog->blogGetir();
 										<td><?php echo $blog->blog_id?></td>
 										<td><img style="max-height: 40px;max-width: 40px;" src="../images/blog/<?php echo $blog->blog_resim?>"></td>
 										<td><?php echo $blog->blog_baslik?></td>
-										<td><?php echo $blog->blog_tarih?></td>
 										<td class="text-center">
 											<a href="./blog-duzenle.php?blog_id=<?php echo $blog->blog_id?>" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
 											<a href="#" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
@@ -75,9 +71,10 @@ $blogGetir = $Blog->blogGetir();
 						<?php
 						}
 						?>
-						</table>
+					</table>
 					</div>
 				</div>
 			</div>
 			<!-- İLETİŞİM MESAJLARI -->
 		</div>
+<?php include "../_inc/footer.php"; ?>

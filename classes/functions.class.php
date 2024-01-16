@@ -527,8 +527,7 @@ class Blog extends Db
     private $blog_title;
     private $blog_description;
     private $blog_keywords;
-    private $blog_tarih;
-    private $blog_resim;
+    private $blog_resim = null;
 
     public function blogGetir()
     {
@@ -552,22 +551,24 @@ class Blog extends Db
         $this->blog_baslik = $_POST['blog_baslik'];
         $this->blog_detay = $_POST['blog_detay'];
         $this->blog_title = $_POST['blog_title'];
-        $this->blog_description = $_POST['blog_desrcipiton'];
+        $this->blog_description = $_POST['blog_description'];
         $this->blog_keywords = $_POST['blog_keywords'];
+
         $this->blog_resim = $_FILES['blog_resim']['name'];
-
-        $hedefKlasor = "../images/blog/";
-        $hedefDosya = $hedefKlasor . $this->blog_resim;
-        if(move_uploaded_file(isset($_FILES['blog_resim']['tmp_name']), $hedefDosya))
+        if(isset($_FILES['blog_resim']) && $_FILES['blog_resim']['error'] === UPLOAD_ERR_OK)
         {
-            $this->blog_resim = $this->blog_resim;
+            $hedefKlasor = "../images/blog/";
+            $hedefDosya = $hedefKlasor . $this->blog_resim;
+            if(move_uploaded_file($_FILES['blog_resim']['tmp_name'], $hedefDosya))
+            {
+                $this->blog_resim = $this->blog_resim;
+            }
+            else
+            {
+                echo "Blog Resmi yüklenirken Hata Oluştu.";
+            }
         }
-        else
-        {
-            echo "Resim yükleme Başarısız.";
-        }
-
-        $query = "INSERT INTO bloglar (blog_baslik, blog_detay, blog_title, blog_descripiton, blog_keywords, blog_resim) VALUES (:blog_baslik, :blog_detay, :blog_title, :blog_descripiton, :blog_keywords, :blog_resim)";
+        $query = "INSERT INTO bloglar (blog_baslik, blog_detay, blog_title, blog_description, blog_keywords, blog_resim) VALUES (:blog_baslik, :blog_detay, :blog_title, :blog_description, :blog_keywords, :blog_resim)";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([
             ':blog_baslik' => $this->blog_baslik,
@@ -648,7 +649,7 @@ class FooterMenu extends Db
 
     public function footerMenuGetir()
     {
-        $query = "SELECT * FROM footer-menu";
+        $query = "SELECT * FROM footermenu";
         $stmt = $this->connect()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -658,7 +659,7 @@ class FooterMenu extends Db
     {
         $this->footer_menu_id = $_GET['footer_menu_id'];
 
-        $query = "SELECT * FROM footer-menu WHERE footer_menu_id=:id";
+        $query = "SELECT * FROM footermenu WHERE footer_menu_id=:id";
         $stmt = $this->connect()->prepare($query);
         $stmt->execute([':id' => $this->footer_menu_id]);
         return $stmt->fetch();
@@ -669,7 +670,7 @@ class FooterMenu extends Db
         $this->footer_menu_adi = $_POST['footer_menu_adi'];
         $this->footer_menu_link = $_POST['footer_menu_link'];
 
-        $query = "INSERT INTO footer-menu (footer_menu_adi, footer_menu_link) VALUES (:adi, :link)";
+        $query = "INSERT INTO footermenu (footer_menu_adi, footer_menu_link) VALUES (:adi, :link)";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([
             ':adi' => $this->footer_menu_adi,
@@ -679,11 +680,11 @@ class FooterMenu extends Db
 
     public function footerMenuGuncelle()
     {
-        $this->footer_menu_id = $_GET['footer_menu_id'];
+        $this->footer_menu_id = $_POST['footer_menu_id'];
         $this->footer_menu_adi = $_POST['footer_menu_adi'];
         $this->footer_menu_link = $_POST['footer_menu_link'];
 
-        $query = "UPDATE footer-menu SET footer_menu_adi=:adi, footer_menu_link=:link WHERE footer_menu_id=:id";
+        $query = "UPDATE footermenu SET footer_menu_adi=:adi, footer_menu_link=:link WHERE footer_menu_id=:id";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([
             ':id' => $this->footer_menu_id,
@@ -696,7 +697,7 @@ class FooterMenu extends Db
     {
         $this->footer_menu_id = $_GET['footer_menu_id'];
 
-        $query = "DELETE FROM footer-menu WHERE footer_menu_id=:id";
+        $query = "DELETE FROM footermenu WHERE footer_menu_id=:id";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([':id' => $this->footer_menu_id]);
     }
