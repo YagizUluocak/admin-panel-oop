@@ -12,20 +12,23 @@ if(isset($_POST['submit']))
 {
 	
 	$BlogEkle = $Blog->blogEkle();
-	$added = true;
 
+	if($BlogEkle)
+	{
+		$added = true;
 	?>
-	<script>
-		document.addEventListener("DOMContentLoaded", function() {
-			var alertBox = document.getElementById('alertBox');
-			alertBox.style.display = 'block';
-	
-			setTimeout(function() {
-				window.location.href = 'blog.php';
-			}, 1100); 
-		});
-	</script>
-<?php
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				var alertBox = document.getElementById('alertBox');
+				alertBox.style.display = 'block';
+		
+				setTimeout(function() {
+					window.location.href = 'blog.php';
+				}, 1100); 
+			});
+		</script>
+	<?php
+	}
 }
 
 

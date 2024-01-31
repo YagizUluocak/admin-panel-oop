@@ -1,3 +1,41 @@
+<?php 
+require_once ('../classes/db.class.php');
+include "../classes/functions.class.php";
+
+include "../_inc/header.php";
+include "../_inc/topbar.php";
+include "../_inc/sidebar.php";
+
+$updated = false;
+$Hizmet = new Hizmet();
+$hizmetIDGetir = $Hizmet->hizmetIDGetir();
+if(isset($_POST['submit']))
+{
+	
+	$HizmetGuncelle = $Hizmet->hizmetGuncelle();
+
+	if($HizmetGuncelle)
+	{
+		$hizmetIDGetir = $Hizmet->hizmetIDGetir();
+        $updated = true;
+		?>
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				var alertBox = document.getElementById('alertBox');
+				alertBox.style.display = 'block';
+		
+				setTimeout(function() {
+					window.location.href = 'hizmetler.php';
+				}, 1100); 
+			});
+		</script>
+	<?php
+	}
+}
+
+
+?>
+
 <!-- ============================================================== -->
 <!-- 						Content Start	 						-->
 <!-- ============================================================== -->
@@ -12,54 +50,56 @@
 					<div class="pull-right mt-10">
 						<a href="hizmetler.php" class="btn btn-warning btn-icon"><i class="fa fa-reply"></i>Geri Dön</a>
 					</div>
-					Hizmet Düzenle
+					Hizmet Ekle
 				</div>
+				<?php
+					if($updated)
+					{
+						?>
+						<div class="alert alert-success text-center bg-success" role="alert" id="alertBox">
+							<h5>Güncelleme İşlemi Başarıyla Gerçekleştirildi. Yönlendiriliyor!</h5>
+						</div>									
+						<?php
+					}
+				?>
 				<div class="card-block">
 
-					<form method="POST" enctype="multipart/form-data" class="form-horizontal">
-						<div class="form-group">
-							<input type="hidden" name="hizmet_id">
-						</div>
-						<div class="form-group">
-							<input type="hidden" name="eski_yol">
-						</div>
-						
+					<form method="POST" enctype="multipart/form-data" class="form-horizontal">						
 						<div class="form-group">
 							<label>Hizmet Adı</label>
-							<input type="text" name="hizmet_baslik" class="form-control">
+							<input type="text" name="hizmet_baslik" placeholder="Hizmet adı giriniz." class="form-control" value="<?php echo $hizmetIDGetir->hizmet_baslik?>">
 						</div>
 
 						<div class="form-group">
 							<label>İçerik</label>
-							<textarea class="summernote" name="hizmet_icerik">
-								
-							</textarea>
+							<textarea class="summernote form-control" name="hizmet_icerik"><?php echo $hizmetIDGetir->hizmet_icerik?></textarea>
 						</div>
 						<div class="form-group">
-							<label>Yüklü Resim</label>
-							<p><img style="max-height: 100px;max-width: 100px;" src="#"></p>
-							
+							<label style="display: block;">Hizmet Resim</label>
+							<img class="img-fluid mb-2" src="../images/hizmet/<?php echo $hizmetIDGetir->hizmet_resim?>" alt="" style ="width:100px; height:100px;">
+							<input type="file" name="hizmet_resim" class="form-control">
 						</div>
-						<div class="form-group">
-							<div class="fileinput fileinput-new input-group col-md-3" data-provides="fileinput">
-								<div class="form-control" data-trigger="fileinput"><span class="fileinput-filename"></span></div>
-								<span class="input-group-addon btn btn-primary btn-file ">
-									<span class="fileinput-new">Yeni Yükle</span>
-									<span class="fileinput-exists">Değiştir</span>
-									<input type="file"  name="hizmet_resim">
-								</span>
-								<a href="#" class="input-group-addon btn btn-danger  hover fileinput-exists" data-dismiss="fileinput">Sil</a>
-							</div>
-						</div>
+
 						<div class="form-group">
 							<label>Vitrinde Göster</label>
-							<select name="hizmet_vitrin" class="form-control m-b">
-								<option value="1">Göster</option>
-								<option value="0">Gizle</option>
+							<select name="hizmet_durum" class="form-control m-b">
+								<?php
+									if($hizmetIDGetir->hizmet_durum == 1)
+									{
+										?>
+										<option value="1">Göster</option>
+										<?php
+									}
+									else
+									{
+										?>
+											<option value="0">Gizle</option>
+										<?php
+									}
+								?>	
 						</select>
-						<small class="text-muted">Hizmetler ana sayfada gösterilecektir</small>
+						<small class="text-muted">Hizmeti Sitede Göster/Gizle Seçeneği</small>
 					</div>
-
 					<hr>
 					<div class="">
 						<b style="color: red;">*SEO Meta Ayarları</b>
@@ -67,22 +107,24 @@
 					</div>
 					<div class="form-group">
 						<label>Title</label>
-						<input type="text" name="hizmet_title" class="form-control form-control-rounded">
+						<input type="text" name="hizmet_title" placeholder="Title belirtiniz" class="form-control form-control-rounded" value="<?php echo $hizmetIDGetir->hizmet_title?>">
 					</div>
 
 					<div class="form-group">
 						<label>Description</label>
-						<input name="hizmet_descr" type="text" class="form-control form-control-rounded">
+						<input name="hizmet_description" type="text" placeholder="Description belirtiniz" class="form-control form-control-rounded" value="<?php echo $hizmetIDGetir->hizmet_description?>">
 					</div>
 
 					<div class="form-group">
 						<label>Keywords</label>
-						<input type="text" name="hizmet_keyword" class="form-control form-control-rounded">
+						<input type="text" name="hizmet_keywords" placeholder="Keywords belirtiniz" class="form-control form-control-rounded" value="<?php echo $hizmetIDGetir->hizmet_keywords?>">
 						<small class="text-muted">Örnek : <code>elma, armut, muz, karpuz</code></small>
 					</div>
-					<button style="cursor: pointer;" type="submit" name="hizmetduzenle" class="btn btn-success btn-icon"><i class="fa fa-floppy-o "></i>Güncelle</button>
+					<button style="cursor: pointer;" type="submit" name="submit" class="btn btn-success btn-icon"><i class="fa fa-floppy-o "></i>Kaydet</button>
+					<a href="hizmetler.php" class="btn btn-warning btn-icon"><i class="fa fa-reply"></i>Geri Dön</a>
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
+<?php include "../_inc/footer.php"; ?>

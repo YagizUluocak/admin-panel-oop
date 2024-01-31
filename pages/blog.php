@@ -9,6 +9,15 @@ include "../_inc/sidebar.php";
 $Blog = new Blog();
 $blogGetir = $Blog->blogGetir();
 
+if(isset($_GET['blog_id']) && isset($_GET['islem']) && $_GET['islem'] == 'sil')
+{
+	$Blog = new Blog();
+	$BlogSil = $Blog->blogSil();
+	if($HizmetSil)
+	{
+		echo "<script>window.location.href='blog.php';</script>";
+	}
+}
 
 ?>
 <!-- ============================================================== -->
@@ -60,8 +69,8 @@ $blogGetir = $Blog->blogGetir();
 										<td><img style="max-height: 40px;max-width: 40px;" src="../images/blog/<?php echo $blog->blog_resim?>"></td>
 										<td><?php echo $blog->blog_baslik?></td>
 										<td class="text-center">
-											<a href="./blog-duzenle.php?blog_id=<?php echo $blog->blog_id?>" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
-											<a href="#" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+											<a href="blog-duzenle.php?blog_id=<?php echo $blog->blog_id?>" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
+											<a href="blog.php?blog_id=<?php echo $blog->blog_id?>&islem=sil" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
 										</td>
 									</tr>
 								<?php

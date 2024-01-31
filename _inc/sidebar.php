@@ -54,23 +54,23 @@
 						<li class="nav-item">
 							<a class="nav-link" href="" aria-expanded="true"><i class="icon-film"></i> <span class="toggle-none">Medya Yönetimi<span style="float: right;" class="fa fa-angle-down"></span></span></a>
 							<ul class="nav-second-level nav flex-column sub-menu" aria-expanded="true">
-								<li class="nav-item"><a class="nav-link" href="resim-galerisi.php">Resim Galerisi</a></li>
+								<li class="nav-item"><a class="nav-link" href="resim-galeri.php">Resim Galerisi</a></li>
 								<li class="nav-item"><a class="nav-link" href="video-galerisi.php">Video Galerisi</a></li>
 								<li class="nav-item"><a class="nav-link" href="belge-galerisi.php">Belge/Ödül Galerisi</a></li>
-								<li class="nav-item"><a class="nav-link" href="./pages/slayt.php">Slayt Yönetimi</a></li>
+								<li class="nav-item"><a class="nav-link" href="slayt.php">Slayt Yönetimi</a></li>
 							</ul>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="" aria-expanded="true"><i class="icon-list"></i> <span class="toggle-none">Menü & Dil Yönetimi<span style="float: right;" class="fa fa-angle-down"></span></span></a>
 							<ul class="nav-second-level nav flex-column sub-menu" aria-expanded="true">
 								<li class="nav-item"><a class="nav-link" href="menu.php">Üst Menü Yönetimi</a></li>
-								<li class="nav-item"><a class="nav-link" href="./pages/alt-menu.php">Alt Menü</a></li>
-								<li class="nav-item"><a class="nav-link" href="./pages/diller.php">Dil Yönetimi</a></li>
+								<li class="nav-item"><a class="nav-link" href="alt-menu.php">Alt Menü</a></li>
+								<li class="nav-item"><a class="nav-link" href="diller.php">Dil Yönetimi</a></li>
 							</ul>
 						</li>
 						<li class="nav-item"><a class="nav-link" href="bilgiler.php"><i class="icon-puzzle"></i> <span class="toggle-none">Site İçi Bilgiler</a></li>
-						<li class="nav-item"><a class="nav-link" href="./pages/modul.php"><i class="icon-puzzle"></i> <span class="toggle-none">Modül Yönetimi</a></li>
-							<li class="nav-item "><a class="nav-link" href="./pages/kolay-iletisim.php"><i class="fa fa-phone"></i> <span class="toggle-none">Kolay Erişim</a></li>
+						<li class="nav-item"><a class="nav-link" href="modul.php"><i class="icon-puzzle"></i> <span class="toggle-none">Modül Yönetimi</a></li>
+							<li class="nav-item "><a class="nav-link" href="kolay-iletisim.php"><i class="fa fa-phone"></i> <span class="toggle-none">Kolay Erişim</a></li>
 								<li class="nav-item "><a class="nav-link" href="google-yandex-ayarlari.php"><i class="icon-magnifier"></i> <span class="toggle-none">Google&Yandex Yönetimi</a></li>
 
 									<li class="nav-item"><a class="nav-link" href="./pages/seo.php"><i class="icon-rocket"></i> <span class="toggle-none">Seo Yönetimi</a></li>

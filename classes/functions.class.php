@@ -721,7 +721,7 @@ class Galeri extends Db
         $this->galeri_id = $_GET['galeri_id'];
         $query = "SELECT * FROM galeri WHERE galeri_id=:id";
         $stmt = $this->connect()->prepare($query);
-        $stmt->execute();
+        $stmt->execute([':id' => $this->galeri_id]);
         return $stmt->fetch();
     }
 
@@ -732,16 +732,21 @@ class Galeri extends Db
         $hedefKlasor = "../images/galeri/";
         $hedefDosya = $hedefKlasor . $this->galeri_resim;
 
-        if(move_uploaded_file(isset($_FILES['galeri_resim']['tmp_name']), $hedefDosya))
+        if(isset($_FILES['galeri_resim']) && $_FILES['galeri_resim']['error'] === UPLOAD_ERR_OK)
         {
-            $this->galeri_resim = $this->galeri_resim;
+            $hedefKlasor = "../images/galeri/";
+            $hedefDosya = $hedefKlasor . $this->galeri_resim;
+            if(move_uploaded_file($_FILES['galeri_resim']['tmp_name'], $hedefDosya))
+            {
+                $this->galeri_resim = $this->galeri_resim;
+            }
+            else
+            {
+                echo "Galeri Resmi yüklenirken Hata Oluştu.";
+            }
         }
-        else
-        {
-            echo "resim Yükleme İşlemi Başarısız.";
-        }
-
-        $query = "INSERT INTO galeri galeri_resim=:resim";
+       
+        $query = "INSERT INTO galeri (galeri_resim) VALUES (:resim)";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([':resim' => $this->galeri_resim]);
     }
@@ -753,15 +758,19 @@ class Galeri extends Db
         $hedefKlasor = "../images/galeri/";
         $hedefDosya = $hedefKlasor . $this->galeri_resim;
 
-        if(move_uploaded_file(isset($_FILES['galeri_resim']['tmp_name']), $hedefDosya))
+        if(isset($_FILES['galeri_resim']) && $_FILES['galeri_resim']['error'] === UPLOAD_ERR_OK)
         {
-            $this->galeri_resim = $this->galeri_resim;
+            $hedefKlasor = "../images/galeri/";
+            $hedefDosya = $hedefKlasor . $this->galeri_resim;
+            if(move_uploaded_file($_FILES['galeri_resim']['tmp_name'], $hedefDosya))
+            {
+                $this->galeri_resim = $this->galeri_resim;
+            }
+            else
+            {
+                echo "Galeri Resmi Güncellenirken Hata Oluştu.";
+            }
         }
-        else
-        {
-            echo "Resim Güncelleme İşlemi Başarısız.";
-        }
-
         $query = "UPDATE galeri SET galeri_resim=:resim WHERE galeri_id=:id";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([
@@ -772,11 +781,16 @@ class Galeri extends Db
 
     public function galeriSil()
     {
-        $this->galeri_id = $_GET['galeri_id'];
-
-        $query = "DELETE FROM galeri WHERE galeri_id=:id";
-        $stmt = $this->connect()->prepare($query);
-        return $stmt->execute([':id' => $this->galeri_id]);
+        if (isset($_GET['galeri_id'])) {
+            $this->galeri_id = $_GET['galeri_id'];
+    
+            $query = "DELETE FROM galeri WHERE galeri_id=:id";
+            $stmt = $this->connect()->prepare($query);
+            return $stmt->execute([':id' => $this->galeri_id]);
+        } else {
+            
+            return false;
+        }
     }
 }
 
@@ -811,8 +825,7 @@ class Hizmet extends Db
     public function hizmetEkle()
     {
         $this->hizmet_baslik = $_POST['hizmet_baslik'];
-        $this->hizmet_icerik = $_POST['hizmeet_icerik'];
-        $this->hizmet_icon = $_POST['hizmet_icon'];
+        $this->hizmet_icerik = $_POST['hizmet_icerik'];
         $this->hizmet_title = $_POST['hizmet_title'];
         $this->hizmet_description = $_POST['hizmet_description'];
         $this->hizmet_keywords = $_POST['hizmet_keywords'];
@@ -822,34 +835,37 @@ class Hizmet extends Db
         $hedefKlasor ="../images/hizmet/";
         $hedefDosya = $hedefKlasor . $this->hizmet_resim;
 
-        if(move_uploaded_file(isset($_FILES['hizmet_resim']['tmp_name']), $hedefDosya))
+        if(isset($_FILES['hizmet_resim']) && $_FILES['hizmet_resim']['error'] === UPLOAD_ERR_OK)
         {
-            $this->hizmet_resim = $this->hizmet_resim;
-        }
-        else
-        {
-            echo "Hizmet Resmi Yüklenirken Bir Hata Oluştu.";
+            $hedefKlasor = "../images/hizmet/";
+            $hedefDosya = $hedefKlasor . $this->hizmet_resim;
+            if(move_uploaded_file($_FILES['hizmet_resim']['tmp_name'], $hedefDosya))
+            {
+                $this->hizmet_resim = $this->hizmet_resim;
+            }
+            else
+            {
+                echo "Hizmet Resmi yüklenirken Hata Oluştu.";
+            }
         }
 
-        $query = "INSERT INTO hizmetler (hizmet_baslik, hizmet_icerik, hizmet_icon, hizmet_title, hizmet_description, hizmet_keywords, hizmet_durum, hizmet_resim) VALUES (:hizmet_baslik, :hizmet_icerik, :hizmet_icon, :hizmet_title, :hizmet_description, :hizmet_keywords, :hizmet_durum, :hizmet_resim)";
+        $query = "INSERT INTO hizmetler (hizmet_baslik, hizmet_icerik, hizmet_title, hizmet_description, hizmet_keywords, hizmet_durum, hizmet_resim) VALUES (:hizmet_baslik, :hizmet_icerik, :hizmet_title, :hizmet_description, :hizmet_keywords, :hizmet_durum, :hizmet_resim)";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([
             ':hizmet_baslik' => $this->hizmet_baslik,
             ':hizmet_icerik' => $this->hizmet_icerik,
-            ':hizmet_icon' => $this->hizmet_icon,
             ':hizmet_title' => $this->hizmet_title,
-            ':hizmet_desctiption' => $this->hizmet_description,
-            ':hizmet_keyowrds' => $this->hizmet_keywords,
+            ':hizmet_description' => $this->hizmet_description,
+            ':hizmet_keywords' => $this->hizmet_keywords,
             ':hizmet_durum' => $this->hizmet_durum,
-            'hizmet_resim' => $this->hizmet_resim
+            ':hizmet_resim' => $this->hizmet_resim
         ]);
     }
     public function hizmetGuncelle()
     {
         $this->hizmet_id = $_GET['hizmet_id'];
         $this->hizmet_baslik = $_POST['hizmet_baslik'];
-        $this->hizmet_icerik = $_POST['hizmeet_icerik'];
-        $this->hizmet_icon = $_POST['hizmet_icon'];
+        $this->hizmet_icerik = $_POST['hizmet_icerik'];
         $this->hizmet_title = $_POST['hizmet_title'];
         $this->hizmet_description = $_POST['hizmet_description'];
         $this->hizmet_keywords = $_POST['hizmet_keywords'];
@@ -858,15 +874,29 @@ class Hizmet extends Db
         $this->hizmet_resim = $_FILES['hizmet_resim']['name'];
         $hedefKlasor ="../images/hizmet/";
         $hedefDosya = $hedefKlasor . $this->hizmet_resim;
-        if(move_uploaded_file(isset($_FILES['hizmet_resim']['tmp_name']), $hedefDosya))
+        if(isset($_FILES['hizmet_resim']) && $_FILES['hizmet_resim']['error'] === UPLOAD_ERR_OK)
         {
-            $this->hizmet_resim = $this->hizmet_resim;
+            $this->hizmet_resim = $_FILES['hizmet_resim']['name'];
+            $hedefKlasor = "../images/hizmet/";
+            $hedefDosya = $hedefKlasor . $this->hizmet_resim;
+
+            if(move_uploaded_file(isset($_FILES['hizmet_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->hizmet_resim = $this->hizmet_resim;
+            }
+            else
+            {
+                echo "Resim Yüklenirken Bir Hata Oluştu.";
+            }
         }
-        else
-        {
-            echo "Hizmet Resmi Güncellenirken Bir Hata Oluştu.";
-        }
-        $query = "UPDATE hizmetler SET hizmet_baslik=:baslik, hizmet_icerik=:icerik, hizmet_icon=:icon, hizmet_title=:title, hizmet_description=:descr, hizmet_keywords=:keywords, hizmet_durum=:durum";
+
+        $query = "UPDATE hizmetler SET 
+            hizmet_baslik=:baslik, 
+            hizmet_icerik=:icerik, 
+            hizmet_title=:title, 
+            hizmet_description=:descr, 
+            hizmet_keywords=:keywords, 
+            hizmet_durum=:durum";
         if($this->hizmet_resim)
         {
             $query .= ", hizmet_resim=:resim";
@@ -878,7 +908,6 @@ class Hizmet extends Db
             ':id' => $this->hizmet_id,
             ':baslik' => $this->hizmet_baslik,
             ':icerik' => $this->hizmet_icerik,
-            ':icon' => $this->hizmet_icon,
             ':title' => $this->hizmet_title,
             ':descr' => $this->hizmet_description,
             ':keywords' => $this->hizmet_keywords,
@@ -899,6 +928,7 @@ class Hizmet extends Db
         return $stmt->execute([':id' => $this->hizmet_id]);
     }
 }
+
 class Icon extends Db
 {
     private $icon_id;
@@ -1073,17 +1103,17 @@ class KolayErisim extends Db
 
 class MailAyar extends Db
 {
-    private $mail_id;
+    private $mail_id = 1;
     private $mail_host;
     private $mail_port;
     private $mail_password;
 
     public function mailAyarIDGetir()
     {
-        $this->mail_id = $_GET['mail_id'];
-        $query = "SELECT * FROM mail-ayar WHERE mail_id=:id";
+        $query = "SELECT * FROM mailayar WHERE mail_id=:id";
         $stmt = $this->connect()->prepare($query);
-        return $stmt->execute([':id' => $this->mail_id]);
+        $stmt->execute([':id' => $this->mail_id]);
+        return $stmt->fetch();
     }
     public function mailAyarGuncelle()
     {
@@ -1203,7 +1233,7 @@ class Proje extends Db
     private $proje_description;
     private $proje_keywords;
     private $proje_durum;
-    private $proje_resim;
+    private $proje_resim = null;
 
     public function projeGetir()
     {
@@ -1230,19 +1260,31 @@ class Proje extends Db
         $this->proje_durum = $_POST['proje_durum'];
 
         $this->proje_resim = $_FILES['proje_resim']['name'];
-        $hedefKlasor = "../images/proje/";
-        $hedefDosya = $hedefKlasor . $this->proje_resim;
+
+        if(isset($_FILES['proje_resim']) && $_FILES['proje_resim']['error'] === UPLOAD_ERR_OK)
+        {
+            $hedefKlasor = "../images/proje/";
+            $hedefDosya = $hedefKlasor . $this->proje_resim;
+            if(move_uploaded_file($_FILES['proje_resim']['tmp_name'], $hedefDosya))
+            {
+                $this->proje_resim = $this->proje_resim;
+            }
+            else
+            {
+                echo "Galeri Resmi yüklenirken Hata Oluştu.";
+            }
+        }
 
         $query = "INSERT INTO projeler (proje_adi, proje_icerik, proje_title, proje_description, proje_keywords, proje_durum, proje_resim) VALUES (:adi, :icerik, :title, :descr, :keywords, :durum, :resim)";
         $stmt = $this->connect()->prepare($query);
         return $stmt->execute([
             ':adi' => $this->proje_adi, 
-            ':icerik' => $this->proje_adi, 
-            ':title' => $this->proje_adi, 
-            ':descr' => $this->proje_adi, 
-            ':keywords' => $this->proje_adi, 
-            ':durum' => $this->proje_adi, 
-            ':resim' => $this->proje_adi
+            ':icerik' => $this->proje_icerik, 
+            ':title' => $this->proje_title, 
+            ':descr' => $this->proje_description, 
+            ':keywords' => $this->proje_keywords, 
+            ':durum' => $this->proje_durum, 
+            ':resim' => $this->proje_resim
         ]);
     }
     public function projeGuncelle()
@@ -1256,25 +1298,30 @@ class Proje extends Db
         $this->proje_durum = $_POST['proje_durum'];
 
         $this->proje_resim = $_FILES['proje_resim']['name'];
-        $hedefKlasor = "../images/proje/";
-        $hedefDosya = $hedefKlasor . $this->proje_resim;
 
-        if(move_uploaded_file(isset($_FILES['proje_resim']['tmp_name']), $hedefDosya))
+        if(isset($_FILES['proje_resim']) && $_FILES['proje_resim']['error'] === UPLOAD_ERR_OK)
         {
-            $this->proje_resim = $this->proje_resim;
-        }
-        else
-        {
-            echo "Proje Resmi Güncellenirken Bir Hata Oluştu.";
+            $this->proje_resim = $_FILES['proje_resim']['name'];
+            $hedefKlasor = "../images/proje/";
+            $hedefDosya = $hedefKlasor . $this->proje_resim;
+
+            if(move_uploaded_file(isset($_FILES['proje_resim']['tmp_name']), $hedefDosya))
+            {
+                $this->proje_resim = $this->proje_resim;
+            }
+            else
+            {
+                echo "Resim Yüklenirken Bir Hata Oluştu.";
+            }
         }
 
         $query = "UPDATE projeler SET proje_adi=:adi, proje_icerik=:icerik, proje_title=:title, proje_description=:descr, proje_keywords=:keywords, proje_durum=:durum";
     
         if($this->proje_resim)
         {
-            $query .="proje_resim=:resim";
+            $query .=", proje_resim=:resim";
         }
-        $query = " WHERE proje_id=:id";
+        $query .= " WHERE proje_id=:id";
 
         $stmt = $this->connect()->prepare($query);
         $params = [
@@ -1284,11 +1331,11 @@ class Proje extends Db
             ':title' => $this->proje_title,
             ':descr' => $this->proje_description,
             ':keywords' => $this->proje_keywords,
-            ':durum' => $this->proje_keywords
+            ':durum' => $this->proje_durum
         ];
         if($this->proje_resim)
         {
-            $params['resim'] = $this->proje_resim;
+            $params[':resim'] = $this->proje_resim;
         }
         return $stmt->execute($params);
     }

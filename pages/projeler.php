@@ -1,3 +1,25 @@
+<?php 
+require_once ('../classes/db.class.php');
+include "../classes/functions.class.php";
+
+include "../_inc/header.php";
+include "../_inc/topbar.php";
+include "../_inc/sidebar.php";
+
+$Proje = new Proje();
+$ProjeGetir = $Proje->projeGetir();
+
+if(isset($_GET['proje_id']) && isset($_GET['islem']) && $_GET['islem'] == 'Sil')
+{
+	$Proje = new Proje();
+	$ProjeSil = $Proje->projeSil();
+	if($ProjeSil)
+	{
+		echo "<script>window.location.href='projeler.php';</script>";
+	}
+}
+?>
+
 <!-- ============================================================== -->
 <!-- 						Content Start	 						-->
 <!-- ============================================================== -->
@@ -18,42 +40,58 @@
 				<div class="card-block">
 					<table id="datatable1" class="table table-striped dt-responsive nowrap table-hover">
 						<thead>
+							
 							<tr>
-								<th class="text-left">
-									<strong>Proje id</strong>
+								<th class="text-center" style="width: 60px;">
+									<strong>#</strong>
 								</th>
-								<th class="text-left">
-									<strong>Proje Adı</strong>
-								</th>
-								<th class="text-left">
+								<th class="text-center" style="width: 200px;">
 									<strong>Proje Resim</strong>
 								</th>
-								<th class="text-left">
-									<strong>Proje İçerik</strong>
+								<th class="text-center">
+									<strong>Proje Adı</strong>
 								</th>
 								<th class="text-center">
+									<strong>Proje İçerik</strong>
+								</th>
+								<th class="text-center" style="width: 100px;">
 									<strong>İşlemler</strong>
 								</th>
 							</tr>
 						</thead>
+						<?php
+						if(!empty($ProjeGetir))
+						{
+						?>
+
 						<tbody>
+							<?php
+							foreach($ProjeGetir as $proj)
+							{
+							?>
 								<tr>
-									<td>#</td>
-									
-									<td></td>
+									<td class="text-center"><?php echo $proj->proje_id?></td>
+									<td class="text-center"><img class="img-fluid" src="../images/proje/<?php echo $proj->proje_resim?>" alt="" style="max-width:200px; max-height:100px;"></td>
+									<td class="text-center"><?php echo $proj->proje_adi?></td>
+									<td class="text-center"><?php echo substr($proj->proje_icerik ,0 ,50) ?></td>
 									<td class="text-center">
-										<a href="#" class="btn btn-primary btn-icon"><i class="icon-picture"></i> Resim Ayarları</a>
-									</td>
-									<td><?php echo $projeicerik; ?></td>
-									<td class="text-center">
-										<a href="#" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
-										<a href="#" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+										<a href="proje-duzenle.php?proje_id=<?php echo $proj->proje_id?>" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
+										<a href="projeler.php?proje_id=<?php echo $proj->proje_id?>&islem=Sil" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
 									</td>
 								</tr>
+
+							<?php
+							}
+							?>
 						</tbody>
+
+						<?php
+						}
+						?>
 					</table>
 				</div>
 			</div>
 		</div>
 		<!-- İLETİŞİM MESAJLARI -->
 	</div>
+<?php include "../_inc/footer.php"; ?>
